@@ -12,10 +12,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class SearchActivity extends Activity {
 	private DefinitionListAdapter adapter;
@@ -28,8 +31,20 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.search);
         
         ListView listResults = (ListView)findViewById(R.id.listResults);
+        EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+        
         this.adapter = new DefinitionListAdapter(this);
         listResults.setAdapter(adapter);
+        
+        txtQuery.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH || event.getAction() == KeyEvent.ACTION_DOWN)
+					doSearch(view);
+					
+				return true;
+			}
+		});
     }
     
     /**
