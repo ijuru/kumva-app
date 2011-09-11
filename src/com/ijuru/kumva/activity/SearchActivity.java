@@ -1,61 +1,65 @@
 package com.ijuru.kumva.activity;
 
-import java.net.URL;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.List;
 
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.search.OnlineSearch;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
-import com.ijuru.kumva.xml.QueryXMLHandler;
-import com.ijuru.kumva.xml.DefinitionListener;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class SearchActivity extends Activity implements DefinitionListener {
+public class SearchActivity extends Activity {
 	private DefinitionListAdapter adapter;
+	private ProgressDialog progressDialog;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.search);
         
-        ListView listResults = (ListView)findViewById(R.id.listView1);	 	
+        ListView listResults = (ListView)findViewById(R.id.listResults);
         this.adapter = new DefinitionListAdapter(this);
         listResults.setAdapter(adapter);
     }
     
+    /**
+     * Performs a dictionary search
+     * @param view the view
+     */
     public void doSearch(View view) {
-    	EditText txtSearch = (EditText)findViewById(R.id.editText1);
-    	String query = txtSearch.getText().toString();
+    	// Get query
+    	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+    	String query = txtQuery.getText().toString();
+    	
+    	// Hide on-screen keyboard
+    	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    	imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
+    	
+    	progressDialog = ProgressDialog.show(this, "Kumva", "Searching...");
+    	
+    	Log.d("Kumva", "New query: " + query);
     	
     	adapter.clear();
     	
-    	try {
-			URL url = new URL("http://kinyarwanda.net/meta/query.xml.php?q=" + query);
-			
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			SAXParser parser = factory.newSAXParser();
-			QueryXMLHandler handler = new QueryXMLHandler();
-			
-			handler.addListener(this);
-			
-			parser.parse(url.openStream(), handler);
-			
-		} catch (Exception e) {
-			new AlertDialog.Builder(this).setMessage(e.getMessage()).show();
-		}
+    	new OnlineSearch(this).execute(query);
     }
 
-	@Override
-	public void found(Definition definition) {
-		adapter.add(definition);
+	public void searchFinished(List<Definition> results) {
+		// Hide the progress dialog
+		if (progressDialog != null)
+			progressDialog.dismiss();
+		
+		for (Definition definition : results)
+			adapter.add(definition);
 	}
 }

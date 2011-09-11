@@ -15,6 +15,7 @@ public class Definition {
 	private String pronunciation;
 	private List<Meaning> meanings = new ArrayList<Meaning>();
 	private String comment;
+	private List<Example> examples = new ArrayList<Example>();
 	
 	/**
 	 * @return the wordClass
@@ -126,5 +127,19 @@ public class Definition {
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	
+	/**
+	 * @return the examples
+	 */
+	public List<Example> getExamples() {
+		return examples;
+	}
+	
+	/**
+	 * @param example the example to add
+	 */
+	public void addExample(Example example) {
+		this.examples.add(example);
 	}
 }
