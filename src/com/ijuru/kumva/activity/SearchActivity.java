@@ -80,7 +80,7 @@ public class SearchActivity extends Activity {
 			progressDialog.dismiss();
 		
 		if (results.size() == 0)
-			setStatusMessage("No matches");
+			setStatusMessage(getString(R.string.str_noresults));
 		
 		for (Definition definition : results)
 			adapter.add(definition);

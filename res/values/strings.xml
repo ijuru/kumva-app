@@ -6,4 +6,5 @@
     <string name="str_about">About</string>
     <string name="str_pleasewait">Please wait...</string>
     <string name="str_searching">Searching</string>
+    <string name="str_noresults">No matches - try removing prefixes</string>
 </resources>
