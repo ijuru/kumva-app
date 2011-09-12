@@ -3,4 +3,7 @@
     <string name="app_name">Kumva</string>
     <string name="str_go">Go</string>
     <string name="str_searchhint">Kinyarwanda or English</string>
+    <string name="str_about">About</string>
+    <string name="str_pleasewait">Please wait...</string>
+    <string name="str_searching">Searching</string>
 </resources>

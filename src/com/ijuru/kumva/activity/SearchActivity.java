@@ -6,13 +6,17 @@ import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.search.OnlineSearch;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
+import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -60,9 +64,7 @@ public class SearchActivity extends Activity {
     	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     	imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
     	
-    	progressDialog = ProgressDialog.show(this, "Kumva", "Searching...");
-    	
-    	Log.d("Kumva", "New query: " + query);
+    	progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
     	
     	adapter.clear();
     	
@@ -77,4 +79,41 @@ public class SearchActivity extends Activity {
 		for (Definition definition : results)
 			adapter.add(definition);
 	}
+
+	/**
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.search, menu);
+	    return true;
+	}
+
+	/**
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.menuabout:
+	    	onMenuAbout();
+		}
+		return true;
+	}
+
+	/**
+	 * Displays the about dialog
+	 */
+	private void onMenuAbout() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		String title = getString(R.string.app_name) + " " + Utils.getVersionName(this);
+		String message = "Thank you for downloading Kumva\n" +
+				"\n" +
+				"If you have any problems please contact rowan@ijuru.com";
+		
+		builder.setTitle(title);
+		builder.setMessage(message);
+		builder.show();
+	}	
 }
