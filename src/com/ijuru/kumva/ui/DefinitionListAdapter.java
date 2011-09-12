@@ -37,10 +37,8 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
-		if (view == null) {
-			//LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if (view == null)
 			view = inflater.inflate(R.layout.definition, null);
-		}
 
 		Definition definition = this.getItem(position);
 		if (definition != null) {
@@ -51,7 +49,10 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 
 			prefix.setText(definition.getPrefix());
 			lemma.setText(definition.getLemma());
-			modifier.setText(definition.getModifier());
+			
+			if (definition.getModifier() != null)
+				modifier.setText("(" + definition.getModifier() + ")");
+			
 			meaning.setText(formatMeaning(definition));
 		}
 
