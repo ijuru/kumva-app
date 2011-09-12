@@ -56,6 +56,9 @@ public class SearchActivity extends Activity {
      * @param view the view
      */
     public void doSearch(View view) {
+    	// Clear status message
+    	setStatusMessage(null);
+    	
     	// Get query
     	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
     	String query = txtQuery.getText().toString();
@@ -76,8 +79,22 @@ public class SearchActivity extends Activity {
 		if (progressDialog != null)
 			progressDialog.dismiss();
 		
+		if (results.size() == 0)
+			setStatusMessage("No matches");
+		
 		for (Definition definition : results)
 			adapter.add(definition);
+	}
+	
+	private void setStatusMessage(String message) {
+		TextView txtStatus = (TextView)findViewById(R.id.statusmessage);
+  
+    	if (message == null) 
+    		txtStatus.setVisibility(View.GONE);
+    	else {
+    		txtStatus.setText(message);
+	    	txtStatus.setVisibility(View.VISIBLE);
+    	}
 	}
 
 	/**
