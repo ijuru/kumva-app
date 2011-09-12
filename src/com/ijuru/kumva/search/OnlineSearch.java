@@ -33,7 +33,7 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			
 			handler.addListener(this);
 			
-			String baseUrl = SITE_URL + "/meta/query.xml.php?q=";
+			String baseUrl = SITE_URL + "/meta/query.xml.php?ref=android&q=";
 			
 			URL url = new URL(baseUrl + URLEncoder.encode(query));
 			parser.parse(url.openStream(), handler);

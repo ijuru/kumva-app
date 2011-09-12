@@ -1,8 +1,8 @@
 package com.ijuru.kumva.ui;
 
 import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.Meaning;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.util.Utils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -50,32 +50,14 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 			prefix.setText(definition.getPrefix());
 			lemma.setText(definition.getLemma());
 			
-			if (definition.getModifier() != null)
+			if (!Utils.isEmpty(definition.getModifier()))
 				modifier.setText("(" + definition.getModifier() + ")");
+			else
+				modifier.setText("");
 			
-			meaning.setText(formatMeaning(definition));
+			meaning.setText(Utils.formatMeaning(definition));
 		}
 
 		return view;
-	}
-
-	/**
-	 * Formats a definition's meanings into a single string
-	 * 
-	 * @param definition
-	 *            the definition
-	 * @return the formatted string
-	 */
-	private String formatMeaning(Definition definition) {
-		if (definition.getMeanings().size() == 1)
-			return definition.getMeanings().get(0).getText();
-
-		StringBuilder sb = new StringBuilder();
-		int index = 1;
-		for (Meaning meaning : definition.getMeanings()) {
-			sb.append(index + ". " + meaning.getText() + "\n");
-			++index;
-		}
-		return sb.toString();
 	}
 }

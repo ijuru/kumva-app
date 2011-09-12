@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,9 +34,9 @@ public class SearchActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search);
+    	setContentView(R.layout.search);
         
-        ListView listResults = (ListView)findViewById(R.id.listResults);
+        ListView listResults = (ListView)findViewById(R.id.listresults);
         EditText txtQuery = (EditText)findViewById(R.id.queryfield);
         
         this.adapter = new DefinitionListAdapter(this);
@@ -47,6 +49,17 @@ public class SearchActivity extends Activity {
 					doSearch(view);
 					
 				return true;
+			}
+		});
+        
+        listResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Definition definition = (Definition)parent.getItemAtPosition(position);
+				((KumvaApplication)getApplication()).setDefinition(definition);
+				
+				Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
+				startActivity(intent);
 			}
 		});
     }

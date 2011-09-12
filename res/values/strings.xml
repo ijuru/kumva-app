@@ -7,4 +7,19 @@
     <string name="str_pleasewait">Please wait...</string>
     <string name="str_searching">Searching</string>
     <string name="str_noresults">No matches - try removing prefixes</string>
+    <string name="str_entrydetails">Entry details</string>
+    <string name="wcls_abbr">Abbreviation</string>
+    <string name="wcls_adj">Adjective</string>
+    <string name="wcls_adv">Adverb</string>
+    <string name="wcls_conj">Conjunction</string>
+    <string name="wcls_dem">Demonstrative</string>
+    <string name="wcls_int">Interjection</string>
+    <string name="wcls_n">Noun</string>
+    <string name="wcls_nm">Noun modifier</string>
+    <string name="wcls_phr">Phrase</string>
+    <string name="wcls_pn">Proper noun</string>
+    <string name="wcls_prep">Preposition</string>
+    <string name="wcls_pro">Pronoun</string>
+    <string name="wcls_v">Verb</string>
+    <string name="wcls_vm">Verb modifier</string>
 </resources>

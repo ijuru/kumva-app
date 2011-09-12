@@ -1,5 +1,8 @@
 package com.ijuru.kumva.util;
 
+import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Meaning;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -31,5 +34,32 @@ public class Utils {
 			Log.e("Kumva", e.getMessage());
 			return null;
 		}
+	}
+	
+	/**
+	 * Checks if the given string is NULL or empty
+	 * @param str the string to check
+	 * @return true if string is empty
+	 */
+	public static boolean isEmpty(String str) {
+		return str == null || str.length() == 0;
+	}
+	
+	/**
+	 * Formats a definition's meanings into a single string
+	 * @param definition the definition
+	 * @return the formatted string
+	 */
+	public static String formatMeaning(Definition definition) {
+		if (definition.getMeanings().size() == 1)
+			return definition.getMeanings().get(0).getText();
+
+		StringBuilder sb = new StringBuilder();
+		int index = 1;
+		for (Meaning meaning : definition.getMeanings()) {
+			sb.append(index + ". " + meaning.getText() + "\n");
+			++index;
+		}
+		return sb.toString();
 	}
 }

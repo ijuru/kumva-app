@@ -81,6 +81,8 @@ public class QueryXMLHandler extends DefaultHandler {
 		
 		// Get the complete text inside this element
 		String text = elementText.toString();
+		if (text.length() == 0)
+			text = null;
 
 		// Read text-only elements
 		if (localName.equals("prefix"))
