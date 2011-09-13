@@ -5,7 +5,12 @@ import com.ijuru.kumva.R;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,15 +26,12 @@ public class EntryActivity extends Activity {
 		
 		Definition definition = ((KumvaApplication)getApplication()).getDefinition();
 		 
-		TextView prefix = (TextView)findViewById(R.id.prefix);
-		TextView lemma = (TextView) findViewById(R.id.lemma);
+		setItemTextOrHide(R.id.prefix, definition.getPrefix(), false);
+		setItemTextOrHide(R.id.lemma, definition.getLemma(), false);
+		
 		TextView modifier = (TextView)findViewById(R.id.modifier);
-		TextView meaning = (TextView)findViewById(R.id.meaning);
 		TextView pronunciation = (TextView)findViewById(R.id.pronunciation);
 		TextView wordclass = (TextView)findViewById(R.id.wordclass);
-
-		prefix.setText(definition.getPrefix());
-		lemma.setText(definition.getLemma());
 		
 		if (!Utils.isEmpty(definition.getModifier()))
 			modifier.setText("(" + definition.getModifier() + ")");
@@ -47,7 +49,56 @@ public class EntryActivity extends Activity {
 		else
 			wordclass.setVisibility(View.GONE);
 			
-		meaning.setText(Utils.formatMeaning(definition));
+		setItemTextOrHide(R.id.meaning, Utils.formatMeaning(definition), true);
+		setItemTextOrHide(R.id.comment, definition.getComment(), true);
 	}
 	
+	/**
+	 * Sets the text of a text view or hides it if the text is empty
+	 * @param itemId the text view identifier
+	 * @param text the text
+	 * @param parseRefs true if references in the text should be parsed
+	 */
+	private void setItemTextOrHide(int itemId, String text, boolean parseRefs) {
+		TextView view = (TextView)findViewById(itemId);
+		view.setMovementMethod(LinkMovementMethod.getInstance());
+		
+		if (!Utils.isEmpty(text))
+			view.setText(parseRefs ? parseReferences(text) : text);
+		else
+			view.setVisibility(View.GONE);
+	}
+	
+	/**
+	 * Parses references into clickable spans
+	 * @param text
+	 * @return
+	 */
+	private Spannable parseReferences(String text) {	
+		String clean = text.replace("{", "").replace("}", "");
+		Spannable spanner = Spannable.Factory.getInstance().newSpannable(clean);
+		
+		int start = 0;
+		for (int c = 0, cleanPos = 0; c < text.length(); c++) {
+			if (text.charAt(c) == '{') {
+				start = cleanPos;
+			}
+			else if (text.charAt(c) == '}') {
+				final int end = cleanPos;
+				final String ref = clean.substring(start, end);
+				spanner.setSpan(new ClickableSpan() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra("query", ref);
+						startActivity(intent);
+
+					}}, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+			}
+			else
+				++cleanPos;
+		}
+		
+		return spanner;
+	}
 }

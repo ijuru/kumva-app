@@ -62,6 +62,16 @@ public class SearchActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+        
+        // Check for an initial query passed via the intent
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+	        String initQuery = (String)extras.get("query");
+	        if (initQuery != null) {
+	        	txtQuery.setText(initQuery);
+	        	doSearch(null);
+	        }
+        }
     }
     
     /**

@@ -10,7 +10,7 @@
     	android:layout_height="wrap_content"
     	android:background="#9db272"
     	android:text="@string/str_entrydetails"
-    	android:textColor="#000000"
+    	android:textColor="#334422"
     	android:textStyle="bold"
     	android:textSize="20sp"
     	android:padding="10dp">
@@ -73,7 +73,16 @@
 	<TextView
 	    android:id="@+id/meaning"
 	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="5dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:textSize="14sp" >
+	</TextView>
+	<TextView
+	    android:id="@+id/comment"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
 	    android:paddingTop="5dp"
 	    android:paddingLeft="10dp"
 	    android:paddingRight="10dp"
