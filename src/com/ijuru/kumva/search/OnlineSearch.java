@@ -43,11 +43,13 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			URL url = new URL(baseUrl + URLEncoder.encode(query));
 			URLConnection connection = url.openConnection();
 			
+			// Request GZIP compression
+			connection.setRequestProperty("Accept-Encoding", "gzip");
+			
 			// Detect GZIP compression if used
 			InputStream stream = connection.getInputStream();
-			if ("gzip".equals(connection.getContentEncoding())) {
-			  stream = new GZIPInputStream(stream);
-			}
+			if ("gzip".equals(connection.getContentEncoding()))
+				stream = new GZIPInputStream(stream);
 			
 			// Start SAX parser
 			InputSource source = new InputSource(stream);
@@ -56,11 +58,9 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			
 		} catch (Exception e) {
 			Log.e("Kumva", e.getMessage());
-			//notifyFailed();
 			return null;
 		}
 		
-		//notifyFinished();
 		return results;	
 	}
 
