@@ -22,4 +22,5 @@
     <string name="wcls_pro">Pronoun</string>
     <string name="wcls_v">Verb</string>
     <string name="wcls_vm">Verb modifier</string>
+    <string name="err_communicationfailed">Failed to communicate with server</string>
 </resources>

@@ -102,11 +102,14 @@ public class SearchActivity extends Activity {
 		if (progressDialog != null)
 			progressDialog.dismiss();
 		
-		if (results.size() == 0)
+		if (results == null)
+			setStatusMessage(getString(R.string.err_communicationfailed));
+		else if (results.size() == 0)
 			setStatusMessage(getString(R.string.str_noresults));
-		
-		for (Definition definition : results)
-			adapter.add(definition);
+		else {
+			for (Definition definition : results)
+				adapter.add(definition);
+		}
 	}
 	
 	private void setStatusMessage(String message) {
