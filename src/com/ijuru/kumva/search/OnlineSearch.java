@@ -20,15 +20,25 @@ import com.ijuru.kumva.activity.SearchActivity;
 import com.ijuru.kumva.xml.DefinitionListener;
 import com.ijuru.kumva.xml.QueryXMLHandler;
 
+/**
+ * An online search which using the Kumva XML API
+ */
 public class OnlineSearch extends Search implements DefinitionListener {
 	
 	private List<Definition> results = new ArrayList<Definition>();
 	private static final String SITE_URL = "http://kinyarwanda.net";
 	
+	/**
+	 * Constructs a search
+	 * @param activity the activity to notifiy when search completes
+	 */
 	public OnlineSearch(SearchActivity activity) {
 		super(activity);
 	}
 	
+	/**
+	 * @see com.ijuru.kumva.search.Search#doSearch(String)
+	 */
 	@Override
 	public List<Definition> doSearch(String query) {
 		try {		
@@ -64,6 +74,9 @@ public class OnlineSearch extends Search implements DefinitionListener {
 		return results;	
 	}
 
+	/**
+	 * @see com.ijuru.kumva.xml.DefinitionListener#found(Definition)
+	 */
 	@Override
 	public void found(Definition definition) {
 		results.add(definition);

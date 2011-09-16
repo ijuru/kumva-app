@@ -88,4 +88,14 @@
 	    android:paddingRight="10dp"
 	    android:textSize="14sp" >
 	</TextView>
+	<TextView
+	    android:id="@+id/examples"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="5dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:textColor="#d2cda6"
+	    android:textSize="14sp" >
+	</TextView>
 </LinearLayout>

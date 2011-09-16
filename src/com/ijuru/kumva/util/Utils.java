@@ -1,6 +1,10 @@
 package com.ijuru.kumva.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
 
 import android.app.AlertDialog;
@@ -50,7 +54,7 @@ public class Utils {
 	 * @param definition the definition
 	 * @return the formatted string
 	 */
-	public static String formatMeaning(Definition definition) {
+	public static String formatMeanings(Definition definition) {
 		if (definition.getMeanings().size() == 1)
 			return definition.getMeanings().get(0).getText();
 
@@ -61,5 +65,41 @@ public class Utils {
 			++index;
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * Formats a definition's meanings into a single string
+	 * @param definition the definition
+	 * @return the formatted string
+	 */
+	public static String formatExamples(Definition definition) {
+		StringBuilder sb = new StringBuilder();
+		for (Example example : definition.getExamples()) {
+			sb.append(example.getUsage() + "\n" + example.getMeaning() + "\n\n");
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Parses a CSV string into an array of integers
+	 * @param csv the string
+	 * @return the array of integers
+	 */
+	public static int[] parseCSVInts(String csv) {
+		String[] vals = csv.split(",");
+		List<Integer> ints = new ArrayList<Integer>();
+		for (String val : vals) {
+			String v = val.trim();
+			if (v.length() > 0)
+				ints.add(Integer.parseInt(val));
+		}
+		return integerListToArray(ints);
+	}
+	
+	public static int[] integerListToArray(List<Integer> list) {
+		int[] ints = new int[list.size()];
+		for (int i = 0; i < list.size(); i++)
+			ints[i] = list.get(i);
+		return ints;
 	}
 }

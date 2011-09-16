@@ -55,7 +55,7 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 			else
 				modifier.setText("");
 			
-			meaning.setText(Utils.formatMeaning(definition));
+			meaning.setText(Utils.formatMeanings(definition));
 		}
 
 		return view;

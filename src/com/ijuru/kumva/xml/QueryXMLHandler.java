@@ -12,6 +12,7 @@ import android.util.Log;
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
+import com.ijuru.kumva.util.Utils;
 
 /**
  * SAX handler for Kumva query XML
@@ -41,6 +42,7 @@ public class QueryXMLHandler extends DefaultHandler {
 			Log.d("Kumva", "definition start");
 			curDefinition = new Definition();
 			curDefinition.setWordClass(attributes.getValue("wordclass"));
+			curDefinition.setNounClasses(Utils.parseCSVInts(attributes.getValue("nounclasses")));
 		} else if (localName.equals("meanings"))
 			inMeanings = true;
 		else if (localName.equals("meaning")) {
@@ -98,8 +100,11 @@ public class QueryXMLHandler extends DefaultHandler {
 				curMeaning.setText(text);
 			else
 				curExample.setMeaning(text);
-		} else if (localName.equals("comment"))
+		} 
+		else if (localName.equals("comment"))
 			curDefinition.setComment(text);
+		else if (localName.equals("usage"))
+			curExample.setUsage(text);
 	}
 
 	/**

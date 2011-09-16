@@ -49,8 +49,9 @@ public class EntryActivity extends Activity {
 		else
 			wordclass.setVisibility(View.GONE);
 			
-		setItemTextOrHide(R.id.meaning, Utils.formatMeaning(definition), true);
-		setItemTextOrHide(R.id.comment, definition.getComment(), true);
+		setItemTextOrHide(R.id.meaning, Utils.formatMeanings(definition), true);
+		setItemTextOrHide(R.id.comment, definition.getComment(), true);	
+		setItemTextOrHide(R.id.examples, Utils.formatExamples(definition), true);
 	}
 	
 	/**
