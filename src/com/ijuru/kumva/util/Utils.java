@@ -3,13 +3,14 @@ package com.ijuru.kumva.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 /**
@@ -45,39 +46,43 @@ public class Utils {
 	 * @param str the string to check
 	 * @return true if string is empty
 	 */
-	public static boolean isEmpty(String str) {
+	public static boolean isEmpty(CharSequence str) {
 		return str == null || str.length() == 0;
 	}
 	
 	/**
 	 * Formats a definition's meanings into a single string
-	 * @param definition the definition
+	 * @param meanings the meanings
 	 * @return the formatted string
 	 */
-	public static String formatMeanings(Definition definition) {
-		if (definition.getMeanings().size() == 1)
-			return definition.getMeanings().get(0).getText();
+	public static String formatMeanings(List<Meaning> meanings) {
+		if (meanings.size() == 1)
+			return meanings.get(0).getText();
 
 		StringBuilder sb = new StringBuilder();
-		int index = 1;
-		for (Meaning meaning : definition.getMeanings()) {
-			sb.append(index + ". " + meaning.getText() + "\n");
-			++index;
+		for (int m = 0; m < meanings.size(); ++m) {
+			Meaning meaning = meanings.get(m);
+			sb.append((m + 1) + ". " + meaning.getText());
+			if (m < meanings.size() - 1)
+				sb.append("\n");
 		}
 		return sb.toString();
 	}
 	
 	/**
 	 * Formats a definition's meanings into a single string
-	 * @param definition the definition
+	 * @param examples the examples
 	 * @return the formatted string
 	 */
-	public static String formatExamples(Definition definition) {
+	public static Spanned formatExamples(List<Example> examples) {
 		StringBuilder sb = new StringBuilder();
-		for (Example example : definition.getExamples()) {
-			sb.append(example.getUsage() + "\n" + example.getMeaning() + "\n\n");
+		for (int e = 0; e < examples.size(); ++e) {
+			Example example = examples.get(e);
+			sb.append(example.getUsage() + "<br /><i>" + example.getMeaning() + "</i>");
+			if (e < examples.size() - 1)
+				sb.append("<br /><br />");
 		}
-		return sb.toString();
+		return Html.fromHtml(sb.toString());
 	}
 	
 	/**
@@ -96,6 +101,11 @@ public class Utils {
 		return integerListToArray(ints);
 	}
 	
+	/**
+	 * Converts a list of integer objects to a primitive array of ints
+	 * @param list the list
+	 * @return the primitive array
+	 */
 	public static int[] integerListToArray(List<Integer> list) {
 		int[] ints = new int[list.size()];
 		for (int i = 0; i < list.size(); i++)

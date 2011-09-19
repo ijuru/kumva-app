@@ -49,9 +49,9 @@ public class EntryActivity extends Activity {
 		else
 			wordclass.setVisibility(View.GONE);
 			
-		setItemTextOrHide(R.id.meaning, Utils.formatMeanings(definition), true);
+		setItemTextOrHide(R.id.meaning, Utils.formatMeanings(definition.getMeanings()), true);
 		setItemTextOrHide(R.id.comment, definition.getComment(), true);	
-		setItemTextOrHide(R.id.examples, Utils.formatExamples(definition), true);
+		setItemTextOrHide(R.id.examples, Utils.formatExamples(definition.getExamples()), true);
 	}
 	
 	/**
@@ -60,12 +60,15 @@ public class EntryActivity extends Activity {
 	 * @param text the text
 	 * @param parseRefs true if references in the text should be parsed
 	 */
-	private void setItemTextOrHide(int itemId, String text, boolean parseRefs) {
+	private void setItemTextOrHide(int itemId, CharSequence text, boolean parseRefs) {
 		TextView view = (TextView)findViewById(itemId);
 		view.setMovementMethod(LinkMovementMethod.getInstance());
 		
-		if (!Utils.isEmpty(text))
-			view.setText(parseRefs ? parseReferences(text) : text);
+		if (!Utils.isEmpty(text)) {
+			if (parseRefs && text instanceof String)
+				text = parseReferences((String)text);
+			view.setText(text);
+		}
 		else
 			view.setVisibility(View.GONE);
 	}
