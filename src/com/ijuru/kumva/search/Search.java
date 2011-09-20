@@ -1,20 +1,27 @@
 package com.ijuru.kumva.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.AsyncTask;
 
 import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.activity.SearchActivity;
 
 public abstract class Search extends AsyncTask<String, Void, List<Definition>> {
 
-	private SearchActivity activity;
+	private List<SearchListener> listeners = new ArrayList<SearchListener>();
 	
-	public Search(SearchActivity activity) {
-		this.activity = activity;
+	/**
+	 * Adds a search listener
+	 * @param listener the listener
+	 */
+	public void addListener(SearchListener listener) {
+		listeners.add(listener);
 	}
 
+	/**
+	 * @see android.os.AsyncTask
+	 */
 	@Override
 	protected List<Definition> doInBackground(String... params) {
 		String query = params[0];
@@ -26,8 +33,14 @@ public abstract class Search extends AsyncTask<String, Void, List<Definition>> {
 	 */
 	@Override
 	protected void onPostExecute(List<Definition> results) {
-		activity.searchFinished(results);
+		for (SearchListener listener : listeners)
+			listener.searchFinished(this, results);
 	}
 
+	/**
+	 * Overridden by search implementations
+	 * @param query the search query
+	 * @return
+	 */
 	protected abstract List<Definition> doSearch(String query);
 }

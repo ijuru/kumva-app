@@ -25,7 +25,7 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 	 *            the context
 	 */
 	public DefinitionListAdapter(Context context) {
-		super(context, R.layout.definition);
+		super(context, R.layout.list_item_definition);
 
 		this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -38,7 +38,7 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;
 		if (view == null)
-			view = inflater.inflate(R.layout.definition, null);
+			view = inflater.inflate(R.layout.list_item_definition, null);
 
 		Definition definition = this.getItem(position);
 		if (definition != null) {

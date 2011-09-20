@@ -1,6 +1,7 @@
 package com.ijuru.kumva.activity;
 
 import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.util.Utils;
 
@@ -22,7 +23,7 @@ public class EntryActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.entry);
+		setContentView(R.layout.activity_entry);
 		
 		Definition definition = ((KumvaApplication)getApplication()).getDefinition();
 		 

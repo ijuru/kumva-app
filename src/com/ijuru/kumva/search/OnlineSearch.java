@@ -16,7 +16,6 @@ import org.xml.sax.InputSource;
 import android.util.Log;
 
 import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.activity.SearchActivity;
 import com.ijuru.kumva.xml.DefinitionListener;
 import com.ijuru.kumva.xml.QueryXMLHandler;
 
@@ -26,14 +25,14 @@ import com.ijuru.kumva.xml.QueryXMLHandler;
 public class OnlineSearch extends Search implements DefinitionListener {
 	
 	private List<Definition> results = new ArrayList<Definition>();
-	private static final String SITE_URL = "http://kinyarwanda.net";
+	private String url;
 	
 	/**
-	 * Constructs a search
-	 * @param activity the activity to notifiy when search completes
+	 * Constructs an online search from the given URL of a Kumva dictionary
+	 * @param url the URL
 	 */
-	public OnlineSearch(SearchActivity activity) {
-		super(activity);
+	public OnlineSearch(String url) {
+		this.url = url;
 	}
 	
 	/**
@@ -49,7 +48,7 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			handler.addListener(this);
 			
 			// Create URL connection to the XML API
-			String baseUrl = SITE_URL + "/meta/query.xml.php?ref=android&q=";
+			String baseUrl = url + "/meta/query.xml.php?ref=android&q=";
 			URL url = new URL(baseUrl + URLEncoder.encode(query));
 			URLConnection connection = url.openConnection();
 			

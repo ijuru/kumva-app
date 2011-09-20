@@ -23,4 +23,12 @@
     <string name="wcls_v">Verb</string>
     <string name="wcls_vm">Verb modifier</string>
     <string name="err_communicationfailed">Failed to communicate with server</string>
+    <string name="str_dictionaries">Dictionaries</string>
+    <string name="str_add">Add</string>
+    <string name="str_name">Name</string>
+    <string name="str_url">URL</string>
+    <string name="str_delete">Delete</string>
+    <string name="str_save">Save</string>
+    <string name="str_discard">Discard</string>
+    <string name="str_editdictionary">Dictionary</string>
 </resources>

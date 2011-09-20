@@ -3,8 +3,11 @@ package com.ijuru.kumva.activity;
 import java.util.List;
 
 import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Dictionary;
+import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
-import com.ijuru.kumva.search.OnlineSearch;
+import com.ijuru.kumva.search.Search;
+import com.ijuru.kumva.search.SearchListener;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
 import com.ijuru.kumva.util.Utils;
 
@@ -26,15 +29,20 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SearchActivity extends Activity {
+/**
+ * Main activity for searching a dictionary
+ */
+public class SearchActivity extends Activity implements SearchListener {
 	private DefinitionListAdapter adapter;
 	private ProgressDialog progressDialog;
 	
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    	setContentView(R.layout.search);
+    	setContentView(R.layout.activity_search);
         
         ListView listResults = (ListView)findViewById(R.id.listresults);
         EditText txtQuery = (EditText)findViewById(R.id.queryfield);
@@ -94,10 +102,19 @@ public class SearchActivity extends Activity {
     	
     	adapter.clear();
     	
-    	new OnlineSearch(this).execute(query);
+    	// Initiate search of the active dictionary
+    	KumvaApplication app = (KumvaApplication) getApplication();
+    	Dictionary activeDict = app.getActiveDictionary();
+    	Search search = activeDict.createSearch();
+    	search.addListener(this);
+    	search.execute(query);
     }
 
-	public void searchFinished(List<Definition> results) {
+    /**
+     * Called when search completes
+     */
+    @Override
+	public void searchFinished(Search search, List<Definition> results) {
 		// Hide the progress dialog
 		if (progressDialog != null)
 			progressDialog.dismiss();
@@ -139,6 +156,9 @@ public class SearchActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menudictionaries:
+			startActivity(new Intent(getApplicationContext(), DictionariesActivity.class));
+	    	break;
 	    case R.id.menuabout:
 	    	onMenuAbout();
 		}
