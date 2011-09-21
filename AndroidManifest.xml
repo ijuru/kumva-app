@@ -20,6 +20,5 @@
         	android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
         <activity android:name=".activity.DictionariesActivity" android:label="@string/str_dictionaries"></activity>
-        <activity android:name=".activity.DictionaryPrefActivity" android:label="@string/str_editdictionary"></activity>
     </application>
 </manifest>

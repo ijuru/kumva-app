@@ -7,8 +7,8 @@ import com.ijuru.kumva.search.Search;
  * An online Kumva dictionary
  */
 public class Dictionary {
-	private String name;
 	private String url;
+	private String name;
 	private String definitionLang;
 	private String meaningLang;
 	
@@ -17,27 +17,11 @@ public class Dictionary {
 	 * @param name the name
 	 * @param url the base URL
 	 */
-	public Dictionary(String name, String url, String definitionLang, String meaningLang) {
-		this.name = name;
+	public Dictionary(String url, String name, String definitionLang, String meaningLang) {
 		this.url = url;
+		this.name = name;
 		this.definitionLang = definitionLang;
 		this.meaningLang = meaningLang;
-	}
-	
-	/**
-	 * Gets the name
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Sets the name
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	/**
@@ -54,6 +38,22 @@ public class Dictionary {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	/**
+	 * Gets the name
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Sets the name
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	/**

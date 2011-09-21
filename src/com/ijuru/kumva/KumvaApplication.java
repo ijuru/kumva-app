@@ -16,7 +16,7 @@ public class KumvaApplication extends Application {
 	 * Constructs the Kumva application
 	 */
 	public KumvaApplication() {
-		Dictionary kinyaDict = new Dictionary("Kinyarwanda.net", "http://kinyarwanda.net", "rw", "en");
+		Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "rw", "en");
 		
 		dictionaries.add(kinyaDict);
 		this.activeDictionary = kinyaDict;

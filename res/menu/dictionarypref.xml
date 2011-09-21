@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:icon="@android:drawable/ic_menu_delete" android:id="@+id/menudictdelete" android:title="@string/str_delete"></item>
-    <item android:id="@+id/menudictsave" android:title="@string/str_save" android:icon="@android:drawable/ic_menu_save"></item>
-    <item android:id="@+id/menudictdiscard" android:title="@string/str_discard" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
-    
-</menu>
