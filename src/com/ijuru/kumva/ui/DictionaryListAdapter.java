@@ -42,8 +42,6 @@ public class DictionaryListAdapter extends ArrayAdapter<Dictionary> {
 		if (dictionary != null) {	
 			TextView text = (TextView)view.findViewById(android.R.id.text1);
 			text.setText(dictionary.getName());
-			TextView summary = (TextView)view.findViewById(android.R.id.summary);
-			summary.setText(dictionary.getUrl());
 		}
 
 		return view;

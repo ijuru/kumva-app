@@ -41,7 +41,7 @@ public class DictionaryPrefActivity extends PreferenceActivity implements OnPref
         
         // Or create new dictionary
         if (this.dictionary == null) {
-        	this.dictionary = new Dictionary("", "http://");
+        	this.dictionary = new Dictionary("", "http://", "", "");
         	this.isNew = true;
         	this.setTitle(getString(R.string.str_adddictionary));
         }
