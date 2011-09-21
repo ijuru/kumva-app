@@ -9,15 +9,17 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class DictionaryPrefActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
+	private boolean isNew = false;
+	private Dictionary dictionary;
 	private EditTextPreference name;
 	private EditTextPreference url;
+	
 	/**
 	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
 	 */
@@ -29,22 +31,28 @@ public class DictionaryPrefActivity extends PreferenceActivity implements OnPref
         this.name = (EditTextPreference)getPreferenceScreen().findPreference("dict_name");
 		this.url = (EditTextPreference)getPreferenceScreen().findPreference("dict_url");
         
+		// Get existing dictionary if specified
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	String dictName = extras.getString("dict");
-        	if (dictName != null) {
-        		Dictionary dict = ((KumvaApplication)getApplication()).getDictionaryByName(dictName);
-        		name.setText(dict.getName());
-        		name.setSummary(dict.getName());
-        		url.setText(dict.getUrl());
-        		url.setSummary(dict.getUrl());
-        	}
+        	if (dictName != null)
+        		this.dictionary = ((KumvaApplication)getApplication()).getDictionaryByName(dictName);
         }
         
-        /**
-         * TODO this don't listen to nufin
-         */
-        getPreferenceScreen().setOnPreferenceChangeListener(this);
+        // Or create new dictionary
+        if (this.dictionary == null) {
+        	this.dictionary = new Dictionary("", "http://");
+        	this.isNew = true;
+        	this.setTitle(getString(R.string.str_adddictionary));
+        }
+        
+        name.setText(dictionary.getName());
+		name.setSummary(dictionary.getName());
+		url.setText(dictionary.getUrl());
+		url.setSummary(dictionary.getUrl());
+        
+        this.name.setOnPreferenceChangeListener(this);
+        this.url.setOnPreferenceChangeListener(this);
 	}
 
 	/**
@@ -55,6 +63,16 @@ public class DictionaryPrefActivity extends PreferenceActivity implements OnPref
 		MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.dictionarypref, menu);
 	    return true;
+	}
+
+	/**
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// Disable delete option if this is an unsaved dictionary
+		menu.getItem(0).setEnabled(!isNew);
+		return true;
 	}
 
 	/**
@@ -76,19 +94,41 @@ public class DictionaryPrefActivity extends PreferenceActivity implements OnPref
 		return true;
 	}
 	
+	/**
+	 * Called when user selects Delete from options menu
+	 */
 	private void onMenuDelete() {	
+		KumvaApplication app = (KumvaApplication)getApplication();
+		app.deleteDictionary(dictionary);
+		
+		finish();
 	}
 	
+	/**
+	 * Called when user selects Save from options menu
+	 */
 	private void onMenuSave() {
+		this.dictionary.setName(this.name.getText());
+		this.dictionary.setUrl(this.url.getText());
+		
+		if (isNew) {
+			KumvaApplication app = (KumvaApplication)getApplication();
+			app.addDictionary(dictionary);
+		}	
+		
+		finish();
 	}
 
+	/**
+	 * Called when a preference value is about to be changed
+	 */
 	@Override
 	public boolean onPreferenceChange(Preference pref, Object value) {
-		Log.e("Kumva", "onPreferenceChange");
-		
 		if (pref instanceof EditTextPreference) {
+			// Update summary to be the preference value
+			String newVal = (String)value;
 			EditTextPreference edit = (EditTextPreference)pref;
-			edit.setSummary(edit.getText());
+			edit.setSummary(newVal);
 		}
 		return true;
 	}

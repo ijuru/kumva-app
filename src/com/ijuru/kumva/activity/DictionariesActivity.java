@@ -17,6 +17,8 @@ import android.widget.ListView;
 
 public class DictionariesActivity extends ListActivity {
 
+	private DictionaryListAdapter adapter;
+	
 	/**
 	 * Called when the activity is first created
 	 */
@@ -24,21 +26,9 @@ public class DictionariesActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     	
-        DictionaryListAdapter adapter = new DictionaryListAdapter(this);
+        this.adapter = new DictionaryListAdapter(this);
     	setListAdapter(adapter);
-    	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-    	
-    	KumvaApplication app = (KumvaApplication)getApplication();
-    	
-    	// Add existing dictionaries
-    	for (Dictionary dict : app.getDictionaries())
-    		adapter.add(dict);
-    	
-    	// Select active dictionary
-    	int position = adapter.getPosition(app.getActiveDictionary());
-    	if (position >= 0)
-    		getListView().setItemChecked(position, true);
-    	
+    	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);	
     	getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -48,7 +38,36 @@ public class DictionariesActivity extends ListActivity {
 				startActivity(intent);
 			}
 		});
+    	
+    	refreshList();
     }
+    
+    private void refreshList() {
+    	KumvaApplication app = (KumvaApplication)getApplication();
+    	
+    	// Clear all items
+    	adapter.clear();
+    	
+    	// Add existing dictionaries
+    	for (Dictionary dict : app.getDictionaries())
+    		adapter.add(dict);
+    	
+    	// Select active dictionary
+    	int position = adapter.getPosition(app.getActiveDictionary());
+    	if (position >= 0)
+    		getListView().setItemChecked(position, true);
+    }
+    
+	/**
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Refresh list in case changes we made
+		refreshList();
+	}
 
 	/**
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)

@@ -48,6 +48,22 @@ public class KumvaApplication extends Application {
 	public Dictionary getActiveDictionary() {
 		return activeDictionary;
 	}
+	
+	/**
+	 * Adds the specified dictionary
+	 * @param dictionary the dictionary to add
+	 */
+	public void addDictionary(Dictionary dictionary) {
+		this.dictionaries.add(dictionary);
+	}
+	
+	/**
+	 * Deletes the specified dictionary
+	 * @param dictionary the dictionary to delete
+	 */
+	public void deleteDictionary(Dictionary dictionary) {
+		this.dictionaries.remove(dictionary);
+	}
 
 	/**
 	 * Gets the currently viewed definition
