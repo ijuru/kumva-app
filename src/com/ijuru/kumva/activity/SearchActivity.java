@@ -29,7 +29,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Main activity for searching a dictionary
@@ -159,7 +158,7 @@ public class SearchActivity extends Activity implements SearchListener {
 	
 		if (result == null) {
 			// Null result means some kind of error so display error message
-			Toast.makeText(this, R.string.err_communicationfailed, Toast.LENGTH_SHORT).show();
+			Dialogs.toast(this, getString(R.string.err_communicationfailed));
 		}
 		else if (result.getMatches().size() == 0) {
 			// Tell user no results... sorry

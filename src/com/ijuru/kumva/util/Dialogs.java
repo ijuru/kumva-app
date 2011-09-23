@@ -8,10 +8,23 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class Dialogs {
+	/**
+	 * Listener for input from prompt dialogs
+	 */
 	public interface InputListener {
 		public void entered(String text);
+	}
+	
+	/**
+	 * Displays a temporary toast message
+	 * @param context the context
+	 * @param message the toast message
+	 */
+	public static void toast(Context context, String message) {
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 	}
 	
 	/**

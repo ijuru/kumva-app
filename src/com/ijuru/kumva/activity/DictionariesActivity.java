@@ -125,12 +125,18 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	/**
 	 * Called when user selects add menu option
 	 */
-	private void onMenuAdd() {
+	private void onMenuAdd() {		
 		Dialogs.prompt(this, getString(R.string.str_newdictionary), getString(R.string.str_siteurl), InputType.TYPE_TEXT_VARIATION_URI,
 			new Dialogs.InputListener() {
 				@Override
-				public void entered(String text) {
-					fetchDictionary(text);
+				public void entered(String url) {
+					// Check for a duplicate with the same URL
+					KumvaApplication app = (KumvaApplication)getApplication();
+					Dictionary existing = app.getDictionaryByURL(url);
+					if (existing == null)
+						fetchDictionary(url);
+					else
+						Dialogs.toast(DictionariesActivity.this, getString(R.string.err_dictduplicate));
 				}
 		    });
 	}
@@ -139,7 +145,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	 * Adds a dictionary by its URL
 	 * @param url the URL of the dictionary site
 	 */
-	private void fetchDictionary(String url) {	
+	private void fetchDictionary(String url) {
 		progressDialog = ProgressDialog.show(this, getString(R.string.str_fetching), getString(R.string.str_pleasewait));
 		
 		FetchDictionaryTask task = new FetchDictionaryTask();
@@ -155,6 +161,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 		KumvaApplication app = (KumvaApplication)getApplication();
 		adapter.add(dictionary);
 		app.addDictionary(dictionary);
+		
 		refreshList();
 	}
 	
@@ -166,6 +173,8 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 		KumvaApplication app = (KumvaApplication)getApplication();
 		app.removeDictionary(editDictionary);
 		adapter.remove(editDictionary);
+		
+		refreshList();
 	}
 	
 	/**
@@ -187,10 +196,12 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 				return d1.getName().compareTo(d2.getName());
 		}});
 		
-		// Select active dictionary
-    	int position = adapter.getPosition(app.getActiveDictionary());
-    	if (position >= 0)
-    		getListView().setItemChecked(position, true);
+		// Select active dictionary if there is one
+    	if (app.getActiveDictionary() != null) {
+	    	int position = adapter.getPosition(app.getActiveDictionary());
+	    	if (position >= 0)
+	    		getListView().setItemChecked(position, true);
+    	}
 	}
 
 	/**
@@ -206,16 +217,12 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 		
 		if (dictionary != null) {
 			// Look for dictionary with same URL which needs to be replaced
-			for (Dictionary dict : app.getDictionaries()) {
-				if (dict.getURL().equals(dictionary.getURL())) {
-					removeDictionary(dict);
-					break;
-				}
-			}
+			Dictionary existing = app.getDictionaryByURL(dictionary.getURL());
+			removeDictionary(existing);
 			
 			addDictionary(dictionary);
 		}
 		else
-			Dialogs.error(this, getString(R.string.err_communicationfailed));
+			Dialogs.toast(this, getString(R.string.err_communicationfailed));
 	}
 }

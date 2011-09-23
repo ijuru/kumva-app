@@ -3,12 +3,12 @@ package com.ijuru.kumva;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ijuru.kumva.util.Dialogs;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * The main Kumva application
@@ -48,9 +48,6 @@ public class KumvaApplication extends Application {
 		if (activeDictURL != null)
 			activeDictionary = getDictionaryByURL(activeDictURL);
 		
-		//Log.e("Kumva", "Dicts loaded: " + dictionaries.size());
-		//Log.e("Kumva", "Active dict: " + activeDictionary.getURL());
-		
 		// Add Kinyarwanda.net if there are no dictionaries
 		if (this.dictionaries.size() == 0) {
 			Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
@@ -66,8 +63,6 @@ public class KumvaApplication extends Application {
 	public void onTerminate() {
 		super.onTerminate();
 		
-		Log.e("Kumva", "onTerminate");
-		
 		saveDictionaries();
 	}
 
@@ -77,7 +72,10 @@ public class KumvaApplication extends Application {
 	public void loadDictionaries() {
 		// Get the dictionaries shared pref file
 		SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREF_FILE_DICTS, MODE_PRIVATE);
-				
+		
+		// Remove existing dictionaries
+		this.dictionaries.clear();
+		
 		for (Object dictCSV : prefs.getAll().values()) {
 			String[] fields = ((String)dictCSV).split(",");
 			if (fields.length == 5) {
@@ -89,7 +87,7 @@ public class KumvaApplication extends Application {
 				addDictionary(new Dictionary(url, name, version, defLang, meanLang));
 			}
 			else {
-				Toast.makeText(getApplicationContext(), "Error loading dictionaries", Toast.LENGTH_SHORT).show();
+				Dialogs.toast(this, getString(R.string.err_dictloading));
 				break;
 			}
 		}

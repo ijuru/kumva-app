@@ -17,7 +17,6 @@ import android.util.Log;
  * Utility methods
  */
 public class Utils {
-	
 	/**
 	 * Gets the version name from the manifest
 	 * @param context the context
