@@ -1,7 +1,6 @@
 package com.ijuru.kumva.util;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,29 +36,26 @@ public class FetchDictionaryTask extends AsyncTask<String, Void, Dictionary> {
 	@Override
 	protected Dictionary doInBackground(String... params) {
 		String url = params[0];
-		String siteInfoUrl = url + "/meta/site.xml.php";
+		Dictionary dictionary = new Dictionary(url);
+		URL dictURL = dictionary.createInfoURL();
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
-			URL dictUrl = new URL(siteInfoUrl);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(dictUrl.openStream());
+			Document document = builder.parse(dictURL.openStream());
 			Element root =document.getDocumentElement();
 			Node nameNode = root.getElementsByTagName("name").item(0);
 			Node versionNode = root.getElementsByTagName("kumvaversion").item(0);
 			Node defLangNode = root.getElementsByTagName("definitionlang").item(0);
 			Node meanLangNode = root.getElementsByTagName("meaninglang").item(0);
 			
-			String name = nameNode.getFirstChild().getNodeValue();
-			String version = versionNode.getFirstChild().getNodeValue();
-			String definitionLang = defLangNode.getFirstChild().getNodeValue();
-			String meaningLang = meanLangNode.getFirstChild().getNodeValue();
-			
-			return new Dictionary(url, name, version, definitionLang, meaningLang);		
+			dictionary.setName(nameNode.getFirstChild().getNodeValue());
+			dictionary.setKumvaVersion(versionNode.getFirstChild().getNodeValue());
+			dictionary.setDefinitionLang(defLangNode.getFirstChild().getNodeValue());
+			dictionary.setMeaningLang(meanLangNode.getFirstChild().getNodeValue());
+			return dictionary;
 			
 		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();

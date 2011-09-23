@@ -61,6 +61,17 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
     }
 
 	/**
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		KumvaApplication app = (KumvaApplication)getApplication();
+		app.saveDictionaries();
+	}
+
+	/**
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
 	@Override
@@ -101,7 +112,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_UPDATE:
-			fetchDictionary(editDictionary.getUrl());
+			fetchDictionary(editDictionary.getURL());
 			break;
 		case MENU_REMOVE:
 			removeDictionary(editDictionary);
@@ -196,7 +207,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 		if (dictionary != null) {
 			// Look for dictionary with same URL which needs to be replaced
 			for (Dictionary dict : app.getDictionaries()) {
-				if (dict.getUrl().equals(dictionary.getUrl())) {
+				if (dict.getURL().equals(dictionary.getURL())) {
 					removeDictionary(dict);
 					break;
 				}
