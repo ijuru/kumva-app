@@ -2,6 +2,7 @@ package com.ijuru.kumva.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
@@ -48,6 +49,15 @@ public class Utils {
 	 */
 	public static boolean isEmpty(CharSequence str) {
 		return str == null || str.length() == 0;
+	}
+	
+	/**
+	 * Converts a ISO-639 languuage code to a language name
+	 * @param code the code
+	 * @return the name
+	 */
+	public static String getLanguageName(String code) {
+		return new Locale(code).getDisplayLanguage();
 	}
 	
 	/**

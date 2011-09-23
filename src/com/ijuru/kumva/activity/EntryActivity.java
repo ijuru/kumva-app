@@ -25,7 +25,7 @@ public class EntryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_entry);
 		
-		Definition definition = ((KumvaApplication)getApplication()).getDefinition();
+		Definition definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
 		 
 		setItemTextOrHide(R.id.prefix, definition.getPrefix(), false);
 		setItemTextOrHide(R.id.lemma, definition.getLemma(), false);

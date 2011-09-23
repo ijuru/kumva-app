@@ -1,36 +1,37 @@
 package com.ijuru.kumva.activity;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.util.Comparator;
 
 import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.ui.DictionaryListAdapter;
+import com.ijuru.kumva.util.FetchDictionaryListener;
+import com.ijuru.kumva.util.FetchDictionaryTask;
+import com.ijuru.kumva.util.Utils;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class DictionariesActivity extends ListActivity {
+public class DictionariesActivity extends ListActivity implements FetchDictionaryListener {
 
 	private DictionaryListAdapter adapter;
+	private Dictionary editDictionary;
+	private final int MENU_UPDATE = 0;
+	private final int MENU_REMOVE = 1;
+	private ProgressDialog progressDialog;
 	
 	/**
 	 * Called when the activity is first created
@@ -38,33 +39,27 @@ public class DictionariesActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        final KumvaApplication app = (KumvaApplication)getApplication();
     	
         this.adapter = new DictionaryListAdapter(this);
     	setListAdapter(adapter);
-    	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);	
-    	/*getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    	
+    	// Handle selection/activation of a dictionary
+    	getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Dictionary dictionary = (Dictionary)parent.getItemAtPosition(position);				
-				Intent intent = new Intent(getApplicationContext(), DictionaryPrefActivity.class);
-				intent.putExtra("dict", dictionary.getName());
-				startActivity(intent);
+				Dictionary dictionary = adapter.getItem(position);
+				app.setActiveDictionary(dictionary);
 			}
-		});*/
+		});
     	
-    	KumvaApplication app = (KumvaApplication)getApplication();
-    	
-    	// Clear all items
-    	adapter.clear();
-    	
-    	// Add existing dictionaries
-    	for (Dictionary dict : app.getDictionaries())
-    		adapter.add(dict);
-    	
-    	// Select active dictionary
-    	int position = adapter.getPosition(app.getActiveDictionary());
-    	if (position >= 0)
-    		getListView().setItemChecked(position, true);
+    	// Handle long click of a dictionary
+    	registerForContextMenu(getListView());
+    			
+    	// Load dictionaries into list
+    	refreshList();
     }
 
 	/**
@@ -76,7 +71,7 @@ public class DictionariesActivity extends ListActivity {
 	    inflater.inflate(R.menu.dictionaries, menu);
 	    return true;
 	}
-
+	
 	/**
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
@@ -88,14 +83,44 @@ public class DictionariesActivity extends ListActivity {
 		}
 		return true;
 	}
+	
+	/**
+	 * @see android.app.Activity#onCreateContextMenu(ContextMenu, View, ContextMenuInfo)
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		this.editDictionary = adapter.getItem(info.position); 
+		menu.setHeaderTitle(editDictionary.getName());
+		menu.add(Menu.NONE, MENU_UPDATE, 0, R.string.str_update);
+		menu.add(Menu.NONE, MENU_REMOVE, 1, R.string.str_remove);
+	}
+
+	/**
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_UPDATE:
+			fetchDictionary(editDictionary.getUrl());
+			break;
+		case MENU_REMOVE:
+			removeDictionary(editDictionary);
+			break;
+		}
+		
+		return true;
+	}
 
 	/**
 	 * Called when user selects add menu option
 	 */
 	private void onMenuAdd() {
 		final EditText txtDictUrl = new EditText(this);
+		txtDictUrl.setHint(R.string.str_siteurl);
 		new AlertDialog.Builder(this)
-			.setTitle("New dictionary")
+			.setTitle(R.string.str_newdictionary)
 			.setView(txtDictUrl)
 			.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
@@ -105,7 +130,7 @@ public class DictionariesActivity extends ListActivity {
 		     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					String url = txtDictUrl.getText().toString();
-					addDictionary(url);
+					fetchDictionary(url);
 				}
 		     })
 			.show();
@@ -115,39 +140,81 @@ public class DictionariesActivity extends ListActivity {
 	 * Adds a dictionary by its URL
 	 * @param url the URL of the dictionary site
 	 */
-	private void addDictionary(String url) {
-		String siteInfoUrl = url + "/meta/site.xml.php";
+	private void fetchDictionary(String url) {	
+		progressDialog = ProgressDialog.show(this, getString(R.string.str_fetching), getString(R.string.str_pleasewait));
 		
+		FetchDictionaryTask task = new FetchDictionaryTask();
+		task.addListener(this);
+		task.execute(url);
+	}
+	
+	/**
+	 * Adds the specified dictionary
+	 * @param dictionary the dictionary
+	 */
+	private void addDictionary(Dictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			URL dictUrl = new URL(siteInfoUrl);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(dictUrl.openStream());
-			Element root =document.getDocumentElement();
-			Node nameNode = root.getElementsByTagName("name").item(0);
-			Node defLangNode = root.getElementsByTagName("definitionlang").item(0);
-			Node meanLangNode = root.getElementsByTagName("meaninglang").item(0);
+		adapter.add(dictionary);
+		app.addDictionary(dictionary);
+		refreshList();
+	}
+	
+	/**
+	 * Removes the specified dictionary
+	 * @param dictionary the dictionary
+	 */
+	private void removeDictionary(Dictionary dictionary) {
+		KumvaApplication app = (KumvaApplication)getApplication();
+		app.removeDictionary(editDictionary);
+		adapter.remove(editDictionary);
+	}
+	
+	/**
+	 * Sorts the dictionaries alphabetically
+	 */
+	private void refreshList() {
+		KumvaApplication app = (KumvaApplication)getApplication();
+		
+		// Clear all items
+    	adapter.clear();
+    	
+    	// Add existing dictionaries
+    	for (Dictionary dict : app.getDictionaries())
+    		adapter.add(dict);
+    			
+    	adapter.sort(new Comparator<Dictionary>() {
+			@Override
+			public int compare(Dictionary d1, Dictionary d2) {
+				return d1.getName().compareTo(d2.getName());
+		}});
+		
+		// Select active dictionary
+    	int position = adapter.getPosition(app.getActiveDictionary());
+    	if (position >= 0)
+    		getListView().setItemChecked(position, true);
+	}
+
+	@Override
+	public void dictionaryFetched(Dictionary dictionary) {
+		KumvaApplication app = (KumvaApplication)getApplication();
+		
+		// Hide the progress dialog
+		if (progressDialog != null)
+			progressDialog.dismiss();
+		
+		if (dictionary != null) {
+			// Look for dictionary with same URL which needs to be replaced
+			for (Dictionary dict : app.getDictionaries()) {
+				if (dict.getUrl().equals(dictionary.getUrl())) {
+					removeDictionary(dict);
+					break;
+				}
+			}
 			
-			String name = nameNode.getFirstChild().getNodeValue();
-			String definitionLang = defLangNode.getFirstChild().getNodeValue();
-			String meaningLang = meanLangNode.getFirstChild().getNodeValue();
-			
-			Dictionary dictionary = new Dictionary(url, name, definitionLang, meaningLang);
-			
-			adapter.add(dictionary);
-			app.addDictionary(dictionary);
-			
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			addDictionary(dictionary);
+		}
+		else {
+			Utils.alert(this, getString(R.string.err_communicationfailed));
 		}
 	}
 }

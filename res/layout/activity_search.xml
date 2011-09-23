@@ -17,10 +17,7 @@
         	android:layout_weight="1" 
         	android:maxLines="1"
         	android:inputType="text"
-        	android:imeOptions="actionSearch"
-        	android:hint="@string/str_searchhint"
-        	>
-            <requestFocus></requestFocus>
+        	android:imeOptions="actionSearch">
         </EditText>
         <Button 
         	android:id="@+id/searchbutton"

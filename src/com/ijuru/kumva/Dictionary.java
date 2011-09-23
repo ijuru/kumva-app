@@ -9,6 +9,7 @@ import com.ijuru.kumva.search.Search;
 public class Dictionary {
 	private String url;
 	private String name;
+	private String kumvaVersion;
 	private String definitionLang;
 	private String meaningLang;
 	
@@ -17,9 +18,10 @@ public class Dictionary {
 	 * @param name the name
 	 * @param url the base URL
 	 */
-	public Dictionary(String url, String name, String definitionLang, String meaningLang) {
+	public Dictionary(String url, String name, String kumvaVersion, String definitionLang, String meaningLang) {
 		this.url = url;
 		this.name = name;
+		this.kumvaVersion = kumvaVersion;
 		this.definitionLang = definitionLang;
 		this.meaningLang = meaningLang;
 	}
@@ -33,14 +35,6 @@ public class Dictionary {
 	}
 	
 	/**
-	 * Sets the URL
-	 * @param url the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	
-	/**
 	 * Gets the name
 	 * @return the name
 	 */
@@ -49,13 +43,13 @@ public class Dictionary {
 	}
 	
 	/**
-	 * Sets the name
-	 * @param name the name to set
+	 * Gets the Kumva version string
+	 * @return the kumvaVersion
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getKumvaVersion() {
+		return kumvaVersion;
 	}
-	
+
 	/**
 	 * Gets the language code of definitions
 	 * @return the definitionLanguage
@@ -65,25 +59,10 @@ public class Dictionary {
 	}
 
 	/**
-	 * Sets the language code of definitions
-	 * @param definitionLang the language code
-	 */
-	public void setDefinitionLang(String definitionLang) {
-		this.definitionLang = definitionLang;
-	}
-
-	/**
 	 * @return the meaningLang
 	 */
 	public String getMeaningLang() {
 		return meaningLang;
-	}
-
-	/**
-	 * @param meaningLang the language code
-	 */
-	public void setMeaningLanguage(String meaningLang) {
-		this.meaningLang = meaningLang;
 	}
 
 	/**

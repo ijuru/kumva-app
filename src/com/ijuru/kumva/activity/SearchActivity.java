@@ -64,7 +64,7 @@ public class SearchActivity extends Activity implements SearchListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Definition definition = (Definition)parent.getItemAtPosition(position);
-				((KumvaApplication)getApplication()).setDefinition(definition);
+				((KumvaApplication)getApplication()).setCurrentDefinition(definition);
 				
 				Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
 				startActivity(intent);
@@ -83,6 +83,34 @@ public class SearchActivity extends Activity implements SearchListener {
     }
     
     /**
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// In case active dictionary was changed
+		updateControls();
+	}
+	
+	/**
+	 * Updates controls which depend on the active dictionary
+	 */
+	private void updateControls() {
+		KumvaApplication app = (KumvaApplication)getApplication();
+		EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+		
+		// Create query field hint from active dictionary's languages
+        Dictionary dictionary = app.getActiveDictionary();
+        if (dictionary != null) {
+        	String lang1 = Utils.getLanguageName(dictionary.getDefinitionLang());
+        	String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
+        	String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
+        	txtQuery.setHint(hint);
+        }
+	}
+    
+    /**
      * Performs a dictionary search
      * @param view the view
      */
@@ -98,19 +126,25 @@ public class SearchActivity extends Activity implements SearchListener {
     	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     	imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
     	
-    	progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
-    	
     	adapter.clear();
     	
     	// Initiate search of the active dictionary
     	KumvaApplication app = (KumvaApplication) getApplication();
-    	Dictionary activeDict = app.getActiveDictionary();
-    	Search search = activeDict.createSearch();
-    	search.addListener(this);
-    	search.execute(query);
+    	Dictionary activeDictionary = app.getActiveDictionary();
+    	
+    	if (activeDictionary != null) {
+    		progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
+        	
+	    	Search search = activeDictionary.createSearch();
+	    	search.addListener(this);
+	    	search.execute(query);
+    	}
+    	else {
+    		Utils.alert(this, getString(R.string.err_nodictionary));
+    	}
     }
 
-    /**
+	/**
      * Called when search completes
      */
     @Override
@@ -129,6 +163,10 @@ public class SearchActivity extends Activity implements SearchListener {
 		}
 	}
 	
+    /**
+     * Sets the status message under the query field, or hides it
+     * @param message the message or null to hide it
+     */
 	private void setStatusMessage(String message) {
 		TextView txtStatus = (TextView)findViewById(R.id.statusmessage);
   

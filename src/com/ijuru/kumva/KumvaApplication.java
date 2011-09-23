@@ -1,11 +1,13 @@
 package com.ijuru.kumva;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Application;
 
+/**
+ * The main Kumva application
+ */
 public class KumvaApplication extends Application {
 	
 	private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
@@ -16,7 +18,8 @@ public class KumvaApplication extends Application {
 	 * Constructs the Kumva application
 	 */
 	public KumvaApplication() {
-		Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "rw", "en");
+		// Add kinyarwanda.net
+		Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
 		
 		dictionaries.add(kinyaDict);
 		this.activeDictionary = kinyaDict;
@@ -46,7 +49,15 @@ public class KumvaApplication extends Application {
 	 * @return the active dictionary
 	 */
 	public Dictionary getActiveDictionary() {
-		return activeDictionary;
+		return this.activeDictionary;
+	}
+	
+	/**
+	 * Sets the active dictionary
+	 * @param dictionary the active dictionary
+	 */
+	public void setActiveDictionary(Dictionary dictionary) {
+		this.activeDictionary = dictionary;
 	}
 	
 	/**
@@ -58,10 +69,10 @@ public class KumvaApplication extends Application {
 	}
 	
 	/**
-	 * Deletes the specified dictionary
+	 * Removes the specified dictionary
 	 * @param dictionary the dictionary to delete
 	 */
-	public void deleteDictionary(Dictionary dictionary) {
+	public void removeDictionary(Dictionary dictionary) {
 		this.dictionaries.remove(dictionary);
 	}
 
@@ -69,7 +80,7 @@ public class KumvaApplication extends Application {
 	 * Gets the currently viewed definition
 	 * @return the definition
 	 */
-	public Definition getDefinition() {
+	public Definition getCurrentDefinition() {
 		return definition;
 	}
 
@@ -77,7 +88,7 @@ public class KumvaApplication extends Application {
 	 * Sets the currently viewed definition
 	 * @param definition the definition to set
 	 */
-	public void setDefinition(Definition definition) {
+	public void setCurrentDefinition(Definition definition) {
 		this.definition = definition;
 	}
 }
