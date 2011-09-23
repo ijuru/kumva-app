@@ -3,7 +3,6 @@ package com.ijuru.kumva.search;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -13,9 +12,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
-import android.util.Log;
-
 import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.xml.DefinitionListener;
 import com.ijuru.kumva.xml.QueryXMLHandler;
 
@@ -25,21 +23,21 @@ import com.ijuru.kumva.xml.QueryXMLHandler;
 public class OnlineSearch extends Search implements DefinitionListener {
 	
 	private List<Definition> results = new ArrayList<Definition>();
-	private String url;
+	private Dictionary dictionary;
 	
 	/**
 	 * Constructs an online search from the given URL of a Kumva dictionary
 	 * @param url the URL
 	 */
-	public OnlineSearch(String url) {
-		this.url = url;
+	public OnlineSearch(Dictionary dictionary) {
+		this.dictionary = dictionary;
 	}
 	
 	/**
 	 * @see com.ijuru.kumva.search.Search#doSearch(String)
 	 */
 	@Override
-	public List<Definition> doSearch(String query) {
+	public SearchResult doSearch(String query, int limit) {
 		try {		
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser parser = factory.newSAXParser();
@@ -48,8 +46,7 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			handler.addListener(this);
 			
 			// Create URL connection to the XML API
-			String baseUrl = url + "/meta/query.xml.php?ref=android&q=";
-			URL url = new URL(baseUrl + URLEncoder.encode(query));
+			URL url = dictionary.createQueryURL(query, limit);
 			URLConnection connection = url.openConnection();
 			
 			// Request GZIP compression
@@ -65,12 +62,11 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			parser.parse(source, handler);
 			stream.close();
 			
+			return new SearchResult(handler.getSuggestion(), results);	
+			
 		} catch (Exception e) {
-			Log.e("Kumva", e.getMessage());
 			return null;
 		}
-		
-		return results;	
 	}
 
 	/**

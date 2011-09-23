@@ -7,7 +7,6 @@ import java.util.Locale;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.Html;
@@ -18,15 +17,7 @@ import android.util.Log;
  * Utility methods
  */
 public class Utils {
-	/**
-	 * Displays a simple alert dialog
-	 * @param context the context
-	 * @param message the alert message
-	 */
-	public static void alert(Context context, String message) {
-		new AlertDialog.Builder(context).setMessage(message).show();
-	}
-
+	
 	/**
 	 * Gets the version name from the manifest
 	 * @param context the context
@@ -49,6 +40,20 @@ public class Utils {
 	 */
 	public static boolean isEmpty(CharSequence str) {
 		return str == null || str.length() == 0;
+	}
+	
+	/**
+	 * Parses a string into an integer
+	 * @param val the string
+	 * @return the integer or null if not a valid integer
+	 */
+	public static Integer parseInteger(String val) {
+		try {
+			return Integer.parseInt(val);
+		}
+		catch (NumberFormatException ex) {
+			return null;
+		}
 	}
 	
 	/**

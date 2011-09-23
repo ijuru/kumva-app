@@ -5,9 +5,7 @@ import java.util.List;
 
 import android.os.AsyncTask;
 
-import com.ijuru.kumva.Definition;
-
-public abstract class Search extends AsyncTask<String, Void, List<Definition>> {
+public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 
 	private List<SearchListener> listeners = new ArrayList<SearchListener>();
 	
@@ -23,24 +21,25 @@ public abstract class Search extends AsyncTask<String, Void, List<Definition>> {
 	 * @see android.os.AsyncTask
 	 */
 	@Override
-	protected List<Definition> doInBackground(String... params) {
-		String query = params[0];
-		return doSearch(query);
+	protected SearchResult doInBackground(Object... params) {
+		String query = (String)params[0];
+		Integer limit = (Integer)params[1];
+		return doSearch(query, limit);
 	}
 
 	/**
 	 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 	 */
 	@Override
-	protected void onPostExecute(List<Definition> results) {
+	protected void onPostExecute(SearchResult result) {
 		for (SearchListener listener : listeners)
-			listener.searchFinished(this, results);
+			listener.searchFinished(this, result);
 	}
 
 	/**
 	 * Overridden by search implementations
 	 * @param query the search query
-	 * @return
+	 * @return the search result
 	 */
-	protected abstract List<Definition> doSearch(String query);
+	protected abstract SearchResult doSearch(String query, int limit);
 }

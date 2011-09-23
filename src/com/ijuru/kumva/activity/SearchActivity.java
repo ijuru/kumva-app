@@ -1,22 +1,23 @@
 package com.ijuru.kumva.activity;
 
-import java.util.List;
-
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.search.Search;
 import com.ijuru.kumva.search.SearchListener;
+import com.ijuru.kumva.search.SearchResult;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
+import com.ijuru.kumva.util.Dialogs;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Main activity for searching a dictionary
@@ -134,32 +136,44 @@ public class SearchActivity extends Activity implements SearchListener {
     	
     	if (activeDictionary != null) {
     		progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
-        	
+    		
+    		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    		int limit = Utils.parseInteger(prefs.getString("max_results", "50"));
+    		
 	    	Search search = activeDictionary.createSearch();
 	    	search.addListener(this);
-	    	search.execute(query);
+	    	search.execute(query, limit);
     	}
-    	else {
-    		Utils.alert(this, getString(R.string.err_nodictionary));
-    	}
+    	else
+    		Dialogs.error(this, getString(R.string.err_nodictionary));
     }
 
 	/**
      * Called when search completes
      */
     @Override
-	public void searchFinished(Search search, List<Definition> results) {
+	public void searchFinished(Search search, SearchResult result) {
 		// Hide the progress dialog
 		if (progressDialog != null)
 			progressDialog.dismiss();
-		
-		if (results == null)
-			setStatusMessage(getString(R.string.err_communicationfailed));
-		else if (results.size() == 0)
+	
+		if (result == null) {
+			// Null result means some kind of error so display error message
+			Toast.makeText(this, R.string.err_communicationfailed, Toast.LENGTH_SHORT).show();
+		}
+		else if (result.getMatches().size() == 0) {
+			// Tell user no results... sorry
 			setStatusMessage(getString(R.string.str_noresults));
+		}
 		else {
-			for (Definition definition : results)
+			for (Definition definition : result.getMatches())
 				adapter.add(definition);
+			
+			if (!Utils.isEmpty(result.getSuggestion())) {
+				// Update status message to show user the search suggestion
+				String message = String.format(getString(R.string.str_bysuggestion), result.getSuggestion());
+				setStatusMessage(message);
+			}
 		}
 	}
 	
@@ -197,8 +211,12 @@ public class SearchActivity extends Activity implements SearchListener {
 		case R.id.menudictionaries:
 			startActivity(new Intent(getApplicationContext(), DictionariesActivity.class));
 	    	break;
+		case R.id.menupreferences:
+			startActivity(new Intent(getApplicationContext(), PreferencesActivity.class));
+	    	break;
 	    case R.id.menuabout:
 	    	onMenuAbout();
+	    	break;
 		}
 		return true;
 	}
@@ -207,14 +225,11 @@ public class SearchActivity extends Activity implements SearchListener {
 	 * Displays the about dialog
 	 */
 	private void onMenuAbout() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		String title = getString(R.string.app_name) + " " + Utils.getVersionName(this);
 		String message = "Thank you for downloading Kumva\n" +
 				"\n" +
 				"If you have any problems please contact rowan@ijuru.com";
 		
-		builder.setTitle(title);
-		builder.setMessage(message);
-		builder.show();
+		Dialogs.alert(this, title, message);
 	}	
 }

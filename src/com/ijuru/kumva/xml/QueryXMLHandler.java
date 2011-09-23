@@ -18,6 +18,9 @@ import com.ijuru.kumva.util.Utils;
  * SAX handler for Kumva query XML
  */
 public class QueryXMLHandler extends DefaultHandler {
+	private String query;
+	private String suggestion;
+	
 	private Definition curDefinition;
 	private Meaning curMeaning;
 	private Example curExample;
@@ -38,8 +41,11 @@ public class QueryXMLHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		if (localName.equals("definition")) {
-			Log.d("Kumva", "definition start");
+		if (localName.equals("definitions")) {
+			query = attributes.getValue("query");
+			suggestion = attributes.getValue("suggestion");
+		}
+		else if (localName.equals("definition")) {
 			curDefinition = new Definition();
 			curDefinition.setWordClass(attributes.getValue("wordclass"));
 			curDefinition.setNounClasses(Utils.parseCSVInts(attributes.getValue("nounclasses")));
@@ -114,5 +120,21 @@ public class QueryXMLHandler extends DefaultHandler {
 		// Notify listeners
 		for (DefinitionListener listener : listeners)
 			listener.found(curDefinition);
+	}
+
+	/**
+	 * Gets the query
+	 * @return the query
+	 */
+	public String getQuery() {
+		return query;
+	}
+
+	/**
+	 * Gets the suggestion
+	 * @return the suggestion
+	 */
+	public String getSuggestion() {
+		return suggestion;
 	}
 }

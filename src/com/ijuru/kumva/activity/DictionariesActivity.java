@@ -6,15 +6,14 @@ import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.ui.DictionaryListAdapter;
+import com.ijuru.kumva.util.Dialogs;
 import com.ijuru.kumva.util.FetchDictionaryListener;
 import com.ijuru.kumva.util.FetchDictionaryTask;
-import com.ijuru.kumva.util.Utils;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -22,7 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
 public class DictionariesActivity extends ListActivity implements FetchDictionaryListener {
@@ -117,23 +115,13 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	 * Called when user selects add menu option
 	 */
 	private void onMenuAdd() {
-		final EditText txtDictUrl = new EditText(this);
-		txtDictUrl.setHint(R.string.str_siteurl);
-		new AlertDialog.Builder(this)
-			.setTitle(R.string.str_newdictionary)
-			.setView(txtDictUrl)
-			.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
+		Dialogs.prompt(this, getString(R.string.str_newdictionary), getString(R.string.str_siteurl), InputType.TYPE_TEXT_VARIATION_URI,
+			new Dialogs.InputListener() {
+				@Override
+				public void entered(String text) {
+					fetchDictionary(text);
 				}
-		     })
-		     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					String url = txtDictUrl.getText().toString();
-					fetchDictionary(url);
-				}
-		     })
-			.show();
+		    });
 	}
 	
 	/**
@@ -170,7 +158,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	}
 	
 	/**
-	 * Sorts the dictionaries alphabetically
+	 * Recreates the list of dictionaries
 	 */
 	private void refreshList() {
 		KumvaApplication app = (KumvaApplication)getApplication();
@@ -194,6 +182,9 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
     		getListView().setItemChecked(position, true);
 	}
 
+	/**
+	 * @see com.ijuru.kumva.util.FetchDictionaryListener#dictionaryFetched(Dictionary)
+	 */
 	@Override
 	public void dictionaryFetched(Dictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
@@ -213,8 +204,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 			
 			addDictionary(dictionary);
 		}
-		else {
-			Utils.alert(this, getString(R.string.err_communicationfailed));
-		}
+		else
+			Dialogs.error(this, getString(R.string.err_communicationfailed));
 	}
 }

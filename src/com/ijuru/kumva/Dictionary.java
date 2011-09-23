@@ -1,5 +1,9 @@
 package com.ijuru.kumva;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
 import com.ijuru.kumva.search.OnlineSearch;
 import com.ijuru.kumva.search.Search;
 
@@ -64,12 +68,27 @@ public class Dictionary {
 	public String getMeaningLang() {
 		return meaningLang;
 	}
+	
+	/**
+	 * Creates a URL to query this dictionary
+	 * @param query the query
+	 * @param limit the maximum results
+	 * @return the URL
+	 */
+	public URL createQueryURL(String query, int limit) {
+		String base = this.url.endsWith("/") ? this.url : (this.url + "/");
+		try {
+			return new URL(base + "meta/query.xml.php?q=" + URLEncoder.encode(query) + "&limit=" + limit + "&ref=android");
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
 
 	/**
 	 * Creates a new search which can query this dictionary
 	 * @return the search
 	 */
 	public Search createSearch() {
-		return new OnlineSearch(this.url);
+		return new OnlineSearch(this);
 	}
 }
