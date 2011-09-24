@@ -108,6 +108,11 @@ public class SearchActivity extends Activity implements SearchListener {
         	String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
         	String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
         	txtQuery.setHint(hint);
+        	txtQuery.setEnabled(true);
+        }
+        else {
+        	txtQuery.setHint(R.string.str_nodictionary);
+        	txtQuery.setEnabled(false);
         }
 	}
     

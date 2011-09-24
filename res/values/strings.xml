@@ -33,6 +33,7 @@
     <string name="str_siteurl">Site URL</string>
     <string name="str_error">Error</string>
     <string name="str_maximumresults">Maximum results</string>
+    <string name="str_nodictionary">No dictionary</string>
     <string name="str_preferences">Preferences</string>
     <string name="str_bysuggestion">Showing results for <b>%1$s</b></string>
     <string name="err_communicationfailed">Failed to communicate with server</string>

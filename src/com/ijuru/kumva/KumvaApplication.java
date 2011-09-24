@@ -156,6 +156,10 @@ public class KumvaApplication extends Application {
 	 * @param dictionary the dictionary to add
 	 */
 	public void addDictionary(Dictionary dictionary) {
+		// If its the only dictionary then make it active
+		if (this.dictionaries.size() == 0)
+			this.activeDictionary = dictionary;
+		
 		this.dictionaries.add(dictionary);
 	}
 	
@@ -165,6 +169,9 @@ public class KumvaApplication extends Application {
 	 */
 	public void removeDictionary(Dictionary dictionary) {
 		this.dictionaries.remove(dictionary);
+		
+		if (dictionary == activeDictionary)
+			activeDictionary = null;
 	}
 
 	/**
