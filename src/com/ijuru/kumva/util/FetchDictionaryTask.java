@@ -1,18 +1,15 @@
 package com.ijuru.kumva.util;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.ijuru.kumva.Dictionary;
 
@@ -38,6 +35,8 @@ public class FetchDictionaryTask extends AsyncTask<String, Void, Dictionary> {
 		String url = params[0];
 		Dictionary dictionary = new Dictionary(url);
 		URL dictURL = dictionary.createInfoURL();
+		if (dictURL == null)
+			return null;
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
@@ -55,14 +54,9 @@ public class FetchDictionaryTask extends AsyncTask<String, Void, Dictionary> {
 			dictionary.setMeaningLang(meanLangNode.getFirstChild().getNodeValue());
 			return dictionary;
 			
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			return null;
 		}
-		return null;
 	}
 
 	/**

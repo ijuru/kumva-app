@@ -130,6 +130,10 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 			new Dialogs.InputListener() {
 				@Override
 				public void entered(String url) {
+					// Add http:// if needs be
+					if (!url.startsWith("http://"))
+						url = "http://" + url;
+					
 					// Check for a duplicate with the same URL
 					KumvaApplication app = (KumvaApplication)getApplication();
 					Dictionary existing = app.getDictionaryByURL(url);
@@ -145,7 +149,7 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	 * Adds a dictionary by its URL
 	 * @param url the URL of the dictionary site
 	 */
-	private void fetchDictionary(String url) {
+	private void fetchDictionary(String url) {		
 		progressDialog = ProgressDialog.show(this, getString(R.string.str_fetching), getString(R.string.str_pleasewait));
 		
 		FetchDictionaryTask task = new FetchDictionaryTask();
