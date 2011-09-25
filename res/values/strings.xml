@@ -32,7 +32,11 @@
     <string name="str_newdictionary">New dictionary</string>
     <string name="str_siteurl">Site URL</string>
     <string name="str_error">Error</string>
+    <string name="str_listen">Listen</string>
     <string name="str_maximumresults">Maximum results</string>
+    <string name="str_pronunciation">Pronunciation</string>
+    <string name="str_meaning">Meaning</string>
+    <string name="str_examples">Examples</string>
     <string name="str_nodictionary">No dictionary</string>
     <string name="str_preferences">Preferences</string>
     <string name="str_bysuggestion">Showing results for <b>%1$s</b></string>

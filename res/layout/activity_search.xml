@@ -11,12 +11,12 @@
     	android:background="#9db272"
     	android:padding="2sp">
     	<ImageView 
-    	android:id="@+id/banner"
-    	android:src="@drawable/ic_launcher"
-    	android:layout_height="fill_parent"
-    	android:layout_width="wrap_content"
-    	android:scaleType="centerInside">
-    </ImageView>
+	    	android:id="@+id/banner"
+	    	android:src="@drawable/ic_launcher"
+	    	android:layout_height="fill_parent"
+	    	android:layout_width="wrap_content"
+	    	android:scaleType="centerInside">
+    	</ImageView>
         <EditText 
         	android:id="@+id/queryfield"
         	android:layout_height="wrap_content"

@@ -16,6 +16,7 @@ public class Definition {
 	private List<Meaning> meanings = new ArrayList<Meaning>();
 	private String comment;
 	private List<Example> examples = new ArrayList<Example>();
+	private String audioURL;
 	
 	/**
 	 * @return the wordClass
@@ -141,5 +142,21 @@ public class Definition {
 	 */
 	public void addExample(Example example) {
 		this.examples.add(example);
+	}
+
+	/**
+	 * Gets the audio URL
+	 * @return the audioURL
+	 */
+	public String getAudioURL() {
+		return audioURL;
+	}
+
+	/**
+	 * Sets the audio URL
+	 * @param audioURL the audio URL
+	 */
+	public void setAudioURL(String audioURL) {
+		this.audioURL = audioURL;
 	}
 }

@@ -7,8 +7,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
@@ -41,12 +39,13 @@ public class QueryXMLHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		if (localName.equals("definitions")) {
+		if (localName.equals("entries")) {
 			query = attributes.getValue("query");
 			suggestion = attributes.getValue("suggestion");
 		}
-		else if (localName.equals("definition")) {
+		else if (localName.equals("entry")) {
 			curDefinition = new Definition();
+		} else if (localName.equals("revision")) {
 			curDefinition.setWordClass(attributes.getValue("wordclass"));
 			curDefinition.setNounClasses(Utils.parseCSVInts(attributes.getValue("nounclasses")));
 		} else if (localName.equals("meanings"))
@@ -56,6 +55,10 @@ public class QueryXMLHandler extends DefaultHandler {
 			// curMeaning.setFlags();
 		} else if (localName.equals("example")) {
 			curExample = new Example();
+		} else if (localName.equals("media")) {
+			if ("audio".equals(attributes.getValue("type"))) {
+				curDefinition.setAudioURL(attributes.getValue("url"));
+			}
 		}
 
 		elementText = new StringBuilder();
@@ -74,9 +77,7 @@ public class QueryXMLHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 
-		if (localName.equals("definition")) {
-			Log.d("Kumva", "definition end: " + curDefinition.getPrefix()
-					+ curDefinition.getLemma());
+		if (localName.equals("entry")) {
 			definitionFinished();
 		} else if (localName.equals("meanings"))
 			inMeanings = false;

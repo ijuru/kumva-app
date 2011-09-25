@@ -139,7 +139,7 @@ public class Dictionary {
 	public URL createQueryURL(String query, int limit) {
 		String base = this.url.endsWith("/") ? this.url : (this.url + "/");
 		try {
-			return new URL(base + "meta/query.xml.php?q=" + URLEncoder.encode(query) + "&limit=" + limit + "&ref=android");
+			return new URL(base + "meta/query.xml.php?q=" + URLEncoder.encode(query) + "&limit=" + limit + "&entries=1&ref=android");
 		} catch (MalformedURLException e) {
 			return null;
 		}

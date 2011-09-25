@@ -7,15 +7,21 @@ import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class EntryActivity extends Activity {
+	
+	private Definition definition;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -25,13 +31,14 @@ public class EntryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_entry);
 		
-		Definition definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
+		this.definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
 		 
 		setItemTextOrHide(R.id.prefix, definition.getPrefix(), false);
 		setItemTextOrHide(R.id.lemma, definition.getLemma(), false);
 		
 		TextView modifier = (TextView)findViewById(R.id.modifier);
 		TextView pronunciation = (TextView)findViewById(R.id.pronunciation);
+		Button audioBtn = (Button)findViewById(R.id.audiobtn);
 		TextView wordclass = (TextView)findViewById(R.id.wordclass);
 		
 		if (!Utils.isEmpty(definition.getModifier()))
@@ -41,6 +48,9 @@ public class EntryActivity extends Activity {
 			pronunciation.setText("/" + definition.getPronunciation() + "/");
 		else
 			pronunciation.setVisibility(View.GONE);
+		
+		if (Utils.isEmpty(definition.getAudioURL()))
+			audioBtn.setVisibility(View.GONE);
 		
 		if (!Utils.isEmpty(definition.getWordClass())) {
 			String strIdName = "wcls_" + definition.getWordClass();
@@ -72,6 +82,35 @@ public class EntryActivity extends Activity {
 		}
 		else
 			view.setVisibility(View.GONE);
+	}
+	
+	/**
+	 * Called when user clicks the listen button
+	 * @param view
+	 */
+	public void playAudio(View view) {
+		final MediaPlayer player = new MediaPlayer();
+		final Button audioBtn = (Button)findViewById(R.id.audiobtn);
+		audioBtn.setEnabled(false);
+		
+		try {
+			player.setDataSource(definition.getAudioURL());
+			player.setOnPreparedListener(new OnPreparedListener() {	
+				@Override
+				public void onPrepared(MediaPlayer arg0) {
+					player.start();
+				}
+			});
+			player.setOnCompletionListener(new OnCompletionListener() {	
+				@Override
+				public void onCompletion(MediaPlayer arg0) {
+					audioBtn.setEnabled(true);
+				}
+			});
+			player.prepareAsync();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
