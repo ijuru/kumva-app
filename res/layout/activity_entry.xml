@@ -60,10 +60,10 @@
 			    android:layout_height="wrap_content"
 			    android:text="@string/str_pronunciation"
 			    android:padding="3sp"
-			    android:background="#888888"
+			    android:background="#444444"
 			    android:textSize="12sp"
 			    android:textStyle="bold"
-			    android:textColor="#333333">
+			    android:textColor="#bbbbbb">
 			</TextView>
 			<LinearLayout
 		    	android:layout_width="fill_parent"
@@ -96,10 +96,10 @@
 			    android:layout_height="wrap_content"
 			    android:text="@string/str_meaning"
 			    android:padding="3sp"
-			    android:background="#888888"
+			    android:background="#444444"
 			    android:textSize="12sp"
 			    android:textStyle="bold"
-			    android:textColor="#333333">
+			    android:textColor="#bbbbbb">
 			</TextView>
 			<TextView
 			    android:id="@+id/wordclass"
@@ -133,10 +133,10 @@
 			    android:layout_height="wrap_content"
 			    android:text="@string/str_examples"
 			    android:padding="3sp"
-			    android:background="#888888"
+			    android:background="#444444"
 			    android:textSize="12sp"
 			    android:textStyle="bold"
-			    android:textColor="#333333">
+			    android:textColor="#bbbbbb">
 			</TextView>
 			<TextView
 			    android:id="@+id/examples"
