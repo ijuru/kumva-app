@@ -3,10 +3,13 @@ package com.ijuru.kumva.activity;
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.util.Dialogs;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -19,9 +22,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * Activity to show details of a dictionary entry
+ */
 public class EntryActivity extends Activity {
 	
 	private Definition definition;
+	private MediaPlayer player = new MediaPlayer();
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -85,31 +92,53 @@ public class EntryActivity extends Activity {
 	}
 	
 	/**
-	 * Called when user clicks the listen button
-	 * @param view
+	 * Called when user clicks the listen/pause button
+	 * @param view the view
 	 */
-	public void playAudio(View view) {
-		final MediaPlayer player = new MediaPlayer();
+	public void playAudio(View view) {	
 		final Button audioBtn = (Button)findViewById(R.id.audiobtn);
-		audioBtn.setEnabled(false);
+		final Drawable listenIcon = audioBtn.getCompoundDrawables()[0];
+		final Drawable pauseIcon = getResources().getDrawable(R.drawable.ic_pause);
+		pauseIcon.setBounds(listenIcon.getBounds());
 		
-		try {
-			player.setDataSource(definition.getAudioURL());
-			player.setOnPreparedListener(new OnPreparedListener() {	
-				@Override
-				public void onPrepared(MediaPlayer arg0) {
-					player.start();
-				}
-			});
-			player.setOnCompletionListener(new OnCompletionListener() {	
-				@Override
-				public void onCompletion(MediaPlayer arg0) {
-					audioBtn.setEnabled(true);
-				}
-			});
-			player.prepareAsync();
-		} catch (Exception e) {
-			e.printStackTrace();
+		// If audio is playing then this is a pause button
+		if (player.isPlaying()) {
+			player.stop();
+			audioBtn.setCompoundDrawables(listenIcon, null, null, null);
+		}
+		else {	
+			// Load animated throbber
+			final AnimationDrawable anim = (AnimationDrawable)getResources().getDrawable(R.drawable.am_loading);
+			anim.setOneShot(false);
+			anim.setBounds(listenIcon.getBounds());
+			audioBtn.setCompoundDrawables(anim, null, null, null);
+			audioBtn.setEnabled(false);
+			anim.start();
+			
+			try {
+				// Reset player and connect to audio URL
+				player.reset();
+				player.setDataSource(definition.getAudioURL());
+				player.setOnPreparedListener(new OnPreparedListener() {	
+					@Override
+					public void onPrepared(MediaPlayer arg0) {
+						// Switch to pause icon
+						player.start();
+						audioBtn.setEnabled(true);
+						audioBtn.setCompoundDrawables(pauseIcon, null, null, null);
+					}
+				});
+				player.setOnCompletionListener(new OnCompletionListener() {	
+					@Override
+					public void onCompletion(MediaPlayer arg0) {
+						// Revert to normal listen icon
+						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
+					}
+				});
+				player.prepareAsync();
+			} catch (Exception e) {
+				Dialogs.toast(this, getString(R.string.err_communicationfailed));
+			}
 		}
 	}
 	
