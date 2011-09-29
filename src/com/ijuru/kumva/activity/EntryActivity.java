@@ -26,6 +26,8 @@ import android.widget.TextView;
 public class EntryActivity extends Activity {
 	
 	private Definition definition;
+	private AnimationDrawable animLoading;
+	private Drawable pauseIcon;
 	private MediaPlayer player = new MediaPlayer();
 
 	/**
@@ -37,6 +39,8 @@ public class EntryActivity extends Activity {
 		setContentView(R.layout.activity_entry);
 		
 		this.definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
+		this.pauseIcon = getResources().getDrawable(R.drawable.ic_pause);
+		this.animLoading = (AnimationDrawable)getResources().getDrawable(R.drawable.am_loading);
 		 
 		setItemTextOrHide(R.id.prefix, definition.getPrefix(), false);
 		setItemTextOrHide(R.id.lemma, definition.getLemma(), false);
@@ -46,25 +50,30 @@ public class EntryActivity extends Activity {
 		Button audioBtn = (Button)findViewById(R.id.audiobtn);
 		TextView wordclass = (TextView)findViewById(R.id.wordclass);
 		
+		// Display modifier in brackets
 		if (!Utils.isEmpty(definition.getModifier()))
 			modifier.setText("(" + definition.getModifier() + ")");
 		
+		// Display pronunciation/amasaku
 		if (!Utils.isEmpty(definition.getPronunciation()))
 			pronunciation.setText("/" + definition.getPronunciation() + "/");
 		else
 			pronunciation.setVisibility(View.GONE);
 		
+		// Display audio button if there is a URL
 		if (Utils.isEmpty(definition.getAudioURL()))
 			audioBtn.setVisibility(View.GONE);
 		
+		// Display word class and noun classes
 		if (!Utils.isEmpty(definition.getWordClass())) {
 			String strIdName = "wcls_" + definition.getWordClass();
 			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva");
 			StringBuilder sb = new StringBuilder(getString(strId));
 			
+			// Create noun classes string
 			if (definition.getNounClasses().size() > 0) {
 				sb.append(" (");
-				sb.append(getString(definition.getNounClasses().size() > 1 ? R.string.str_classes : R.string.str_class));
+				sb.append(getString(definition.getNounClasses().size() > 1 ? R.string.str_classes : R.string.str_class).toLowerCase());
 				sb.append(" ");
 				sb.append(Utils.makeCSV(definition.getNounClasses()));
 				sb.append(")");
@@ -106,7 +115,6 @@ public class EntryActivity extends Activity {
 	public void playAudio(View view) {	
 		final Button audioBtn = (Button)findViewById(R.id.audiobtn);
 		final Drawable listenIcon = audioBtn.getCompoundDrawables()[0];
-		final Drawable pauseIcon = getResources().getDrawable(R.drawable.ic_pause);
 		pauseIcon.setBounds(listenIcon.getBounds());
 		
 		// If audio is playing then this is a pause button
@@ -114,14 +122,15 @@ public class EntryActivity extends Activity {
 			player.stop();
 			audioBtn.setCompoundDrawables(listenIcon, null, null, null);
 		}
-		else {	
-			// Load animated throbber
-			final AnimationDrawable anim = (AnimationDrawable)getResources().getDrawable(R.drawable.am_loading);
-			anim.setOneShot(false);
-			anim.setBounds(listenIcon.getBounds());
-			audioBtn.setCompoundDrawables(anim, null, null, null);
+		else {
+			// Set animated throbber
+			animLoading.setBounds(listenIcon.getBounds());
+			audioBtn.setCompoundDrawables(animLoading, null, null, null);
 			audioBtn.setEnabled(false);
-			anim.start();
+			
+			// Start animation
+			animLoading.setOneShot(false);
+			animLoading.start();
 			
 			try {
 				// Reset player and connect to audio URL
@@ -131,14 +140,18 @@ public class EntryActivity extends Activity {
 					@Override
 					public void onPrepared(MediaPlayer arg0) {
 						// Switch to pause icon
-						player.start();
+						animLoading.stop();
 						audioBtn.setEnabled(true);
 						audioBtn.setCompoundDrawables(pauseIcon, null, null, null);
+						
+						// Play audio
+						player.start();
 					}
 				});
 				player.setOnErrorListener(new MediaPlayer.OnErrorListener() {		
 					@Override
 					public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
+						animLoading.stop();
 						audioBtn.setEnabled(true);
 						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
 						Dialogs.toast(EntryActivity.this, getString(R.string.err_communicationfailed));
