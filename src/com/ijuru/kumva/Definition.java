@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Definition {
 	private String wordClass;
-	private int[] nounClasses;
+	private List<Integer> nounClasses = new ArrayList<Integer>();
 	private String prefix;
 	private String lemma;
 	private String modifier;
@@ -19,6 +19,7 @@ public class Definition {
 	private String audioURL;
 	
 	/**
+	 * Gets the word class
 	 * @return the wordClass
 	 */
 	public String getWordClass() {
@@ -26,6 +27,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Sets the word class
 	 * @param wordClass the wordClass to set
 	 */
 	public void setWordClass(String wordClass) {
@@ -33,20 +35,23 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the noun classes
 	 * @return the nounClasses
 	 */
-	public int[] getNounClasses() {
+	public List<Integer> getNounClasses() {
 		return nounClasses;
 	}
 	
 	/**
+	 * Sets the noun classes
 	 * @param nounClasses the nounClasses to set
 	 */
-	public void setNounClasses(int[] nounClasses) {
+	public void setNounClasses(List<Integer> nounClasses) {
 		this.nounClasses = nounClasses;
 	}
 	
 	/**
+	 * Gets the prefix
 	 * @return the prefix
 	 */
 	public String getPrefix() {
@@ -54,6 +59,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Sets the prefix
 	 * @param prefix the prefix to set
 	 */
 	public void setPrefix(String prefix) {
@@ -61,6 +67,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the lemma
 	 * @return the lemma
 	 */
 	public String getLemma() {
@@ -68,6 +75,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Sets the lemma
 	 * @param lemma the lemma to set
 	 */
 	public void setLemma(String lemma) {

@@ -1,6 +1,8 @@
 package com.ijuru.kumva.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,7 +13,6 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 
 /**
  * Utility methods
@@ -27,7 +28,6 @@ public class Utils {
 			String packageName = context.getPackageName();
 			return context.getPackageManager().getPackageInfo(packageName, 0).versionName;
 		} catch (NameNotFoundException e) {
-			Log.e("Kumva", e.getMessage());
 			return null;
 		}
 	}
@@ -56,7 +56,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Converts a ISO-639 languuage code to a language name
+	 * Converts a ISO-639 language code to a language name
 	 * @param code the code
 	 * @return the name
 	 */
@@ -100,11 +100,11 @@ public class Utils {
 	}
 	
 	/**
-	 * Parses a CSV string into an array of integers
+	 * Parses a CSV string into a list of integers
 	 * @param csv the string
-	 * @return the array of integers
+	 * @return the list of integers
 	 */
-	public static int[] parseCSVInts(String csv) {
+	public static List<Integer> parseCSVIntegers(String csv) {
 		String[] vals = csv.split(",");
 		List<Integer> ints = new ArrayList<Integer>();
 		for (String val : vals) {
@@ -112,18 +112,19 @@ public class Utils {
 			if (v.length() > 0)
 				ints.add(Integer.parseInt(val));
 		}
-		return integerListToArray(ints);
-	}
-	
-	/**
-	 * Converts a list of integer objects to a primitive array of ints
-	 * @param list the list
-	 * @return the primitive array
-	 */
-	public static int[] integerListToArray(List<Integer> list) {
-		int[] ints = new int[list.size()];
-		for (int i = 0; i < list.size(); i++)
-			ints[i] = list.get(i);
 		return ints;
 	}
+	
+	public static String makeCSV(Collection<?> vals) {
+	     StringBuilder builder = new StringBuilder();
+	     Iterator<?> iter = vals.iterator();
+	     while (iter.hasNext()) {
+	         builder.append(iter.next());
+	         if (!iter.hasNext()) {
+	           break;                  
+	         }
+	         builder.append(", ");
+	     }
+	     return builder.toString();
+	 }
 }

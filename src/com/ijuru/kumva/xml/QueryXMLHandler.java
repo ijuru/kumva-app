@@ -47,7 +47,7 @@ public class QueryXMLHandler extends DefaultHandler {
 			curDefinition = new Definition();
 		} else if (localName.equals("revision")) {
 			curDefinition.setWordClass(attributes.getValue("wordclass"));
-			curDefinition.setNounClasses(Utils.parseCSVInts(attributes.getValue("nounclasses")));
+			curDefinition.setNounClasses(Utils.parseCSVIntegers(attributes.getValue("nounclasses")));
 		} else if (localName.equals("meanings"))
 			inMeanings = true;
 		else if (localName.equals("meaning")) {

@@ -62,7 +62,17 @@ public class EntryActivity extends Activity {
 		if (!Utils.isEmpty(definition.getWordClass())) {
 			String strIdName = "wcls_" + definition.getWordClass();
 			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva");
-			wordclass.setText(getString(strId));
+			StringBuilder sb = new StringBuilder(getString(strId));
+			
+			if (definition.getNounClasses().size() > 0) {
+				sb.append(" (");
+				sb.append(getString(definition.getNounClasses().size() > 1 ? R.string.str_classes : R.string.str_class));
+				sb.append(" ");
+				sb.append(Utils.makeCSV(definition.getNounClasses()));
+				sb.append(")");
+			}
+			
+			wordclass.setText(sb.toString());
 		}
 		else
 			wordclass.setVisibility(View.GONE);

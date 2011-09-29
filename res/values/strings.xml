@@ -26,6 +26,8 @@
     <string name="str_remove">Remove</string>
     <string name="str_save">Save</string>
     <string name="str_discard">Discard</string>
+    <string name="str_class">Class</string>
+    <string name="str_classes">Classes</string>
     <string name="str_add">Add</string>
     <string name="str_update">Update</string>
     <string name="str_fetching">Fetching</string>
