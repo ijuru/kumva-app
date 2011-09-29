@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -129,7 +127,7 @@ public class EntryActivity extends Activity {
 				// Reset player and connect to audio URL
 				player.reset();
 				player.setDataSource(definition.getAudioURL());
-				player.setOnPreparedListener(new OnPreparedListener() {	
+				player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {	
 					@Override
 					public void onPrepared(MediaPlayer arg0) {
 						// Switch to pause icon
@@ -138,10 +136,18 @@ public class EntryActivity extends Activity {
 						audioBtn.setCompoundDrawables(pauseIcon, null, null, null);
 					}
 				});
-				player.setOnCompletionListener(new OnCompletionListener() {	
+				player.setOnErrorListener(new MediaPlayer.OnErrorListener() {		
+					@Override
+					public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
+						audioBtn.setEnabled(true);
+						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
+						Dialogs.toast(EntryActivity.this, getString(R.string.err_communicationfailed));
+						return true;
+					}
+				});
+				player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {	
 					@Override
 					public void onCompletion(MediaPlayer arg0) {
-						// Revert to normal listen icon
 						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
 					}
 				});
