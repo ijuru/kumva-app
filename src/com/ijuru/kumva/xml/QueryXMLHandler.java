@@ -29,6 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
+import com.ijuru.kumva.Tag;
 import com.ijuru.kumva.util.Utils;
 
 /**
@@ -41,15 +42,15 @@ public class QueryXMLHandler extends DefaultHandler {
 	private Definition curDefinition;
 	private Meaning curMeaning;
 	private Example curExample;
+	private String curRelationship;
+	private List<Tag> curTags;
 	private boolean inMeanings = false;
 	private StringBuilder elementText = null;
 	private List<DefinitionListener> listeners = new ArrayList<DefinitionListener>();
 
 	/**
 	 * Adds the definition listener
-	 * 
-	 * @param listener
-	 *            the listener
+	 * @param listener the listener
 	 */
 	public void addListener(DefinitionListener listener) {
 		listeners.add(listener);
@@ -72,6 +73,11 @@ public class QueryXMLHandler extends DefaultHandler {
 		else if (localName.equals("meaning")) {
 			curMeaning = new Meaning();
 			// curMeaning.setFlags();
+		} else if (localName.equals("relationship")) {
+			curRelationship = attributes.getValue("name");
+			curTags = new ArrayList<Tag>();
+		} else if (localName.equals("tag")) {
+			curTags.add(new Tag(attributes.getValue("lang"), attributes.getValue("text")));
 		} else if (localName.equals("example")) {
 			curExample = new Example();
 		} else if (localName.equals("media")) {
@@ -129,6 +135,8 @@ public class QueryXMLHandler extends DefaultHandler {
 		} 
 		else if (localName.equals("comment"))
 			curDefinition.setComment(text);
+		else if (localName.equals("relationship"))
+			curDefinition.setTags(curRelationship, curTags);
 		else if (localName.equals("usage"))
 			curExample.setUsage(text);
 	}

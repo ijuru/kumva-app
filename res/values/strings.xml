@@ -39,6 +39,7 @@
     <string name="str_pronunciation">Pronunciation</string>
     <string name="str_meaning">Meaning</string>
     <string name="str_examples">Examples</string>
+    <string name="str_derivation">Derivation</string>
     <string name="str_nodictionary">No dictionary</string>
     <string name="str_preferences">Preferences</string>
     <string name="str_bysuggestion">Showing results for <b>%1$s</b></string>

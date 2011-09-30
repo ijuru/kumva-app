@@ -21,6 +21,7 @@ package com.ijuru.kumva.ui;
 
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.util.Format;
 import com.ijuru.kumva.util.Utils;
 
 import android.content.Context;
@@ -74,7 +75,7 @@ public class DefinitionListAdapter extends ArrayAdapter<Definition> {
 			else
 				modifier.setText("");
 			
-			meaning.setText(Utils.formatMeanings(definition.getMeanings()));
+			meaning.setText(Format.meanings(getContext(), definition.getMeanings()));
 		}
 
 		return view;

@@ -20,7 +20,9 @@
 package com.ijuru.kumva;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A word definition
@@ -34,6 +36,7 @@ public class Definition {
 	private String pronunciation;
 	private List<Meaning> meanings = new ArrayList<Meaning>();
 	private String comment;
+	private Map<String, List<Tag>> tags = new HashMap<String, List<Tag>>();
 	private List<Example> examples = new ArrayList<Example>();
 	private String audioURL;
 	
@@ -155,6 +158,24 @@ public class Definition {
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	
+	/**
+	 * Gets the tags for the given relationship
+	 * @param relationship the relationship
+	 * @return the tags
+	 */
+	public List<Tag> getTags(String relationship) {
+		return tags.get(relationship);
+	}
+	
+	/**
+	 * Sets the tags for the given relationship
+	 * @param relationship the relationship
+	 * @param tags the tag
+	 */
+	public void setTags(String relationship, List<Tag> tags) {
+		this.tags.put(relationship, tags);
 	}
 	
 	/**

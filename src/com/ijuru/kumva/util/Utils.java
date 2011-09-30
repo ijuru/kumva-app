@@ -25,13 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.ijuru.kumva.Example;
-import com.ijuru.kumva.Meaning;
-
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.text.Html;
-import android.text.Spanned;
 
 /**
  * General utility methods
@@ -61,6 +56,18 @@ public class Utils {
 	}
 	
 	/**
+	 * Capitalizes the given string
+	 * @param str the string
+	 * @return the capitalized string
+	 */
+	public static String capitalize(String str) {
+		if (str.length() == 0)
+			return "";
+		
+		return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+	}
+	
+	/**
 	 * Parses a string into an integer
 	 * @param val the string
 	 * @return the integer or null if not a valid integer
@@ -84,41 +91,6 @@ public class Utils {
 	}
 	
 	/**
-	 * Formats a definition's meanings into a single string
-	 * @param meanings the meanings
-	 * @return the formatted string
-	 */
-	public static String formatMeanings(List<Meaning> meanings) {
-		if (meanings.size() == 1)
-			return meanings.get(0).getText();
-
-		StringBuilder sb = new StringBuilder();
-		for (int m = 0; m < meanings.size(); ++m) {
-			Meaning meaning = meanings.get(m);
-			sb.append((m + 1) + ". " + meaning.getText());
-			if (m < meanings.size() - 1)
-				sb.append("\n");
-		}
-		return sb.toString();
-	}
-	
-	/**
-	 * Formats a definition's meanings into a single string
-	 * @param examples the examples
-	 * @return the formatted string
-	 */
-	public static Spanned formatExamples(List<Example> examples) {
-		StringBuilder sb = new StringBuilder();
-		for (int e = 0; e < examples.size(); ++e) {
-			Example example = examples.get(e);
-			sb.append(example.getUsage() + "<br /><i>" + example.getMeaning() + "</i>");
-			if (e < examples.size() - 1)
-				sb.append("<br /><br />");
-		}
-		return Html.fromHtml(sb.toString());
-	}
-	
-	/**
 	 * Parses a CSV string into a list of integers
 	 * @param csv the string
 	 * @return the list of integers
@@ -134,11 +106,16 @@ public class Utils {
 		return ints;
 	}
 	
+	/**
+	 * Makes a CSV string from a collection of objects
+	 * @param vals the objects
+	 * @return the CSV string
+	 */
 	public static String makeCSV(Collection<?> vals) {
 	     StringBuilder builder = new StringBuilder();
 	     Iterator<?> iter = vals.iterator();
 	     while (iter.hasNext()) {
-	         builder.append(iter.next());
+	         builder.append(iter.next().toString());
 	         if (!iter.hasNext()) {
 	           break;                  
 	         }
