@@ -179,7 +179,5 @@ public class Dictionary {
 	public String toString() {
 		String name = this.name.replace(",", "");
 		return url + "," + name + "," + kumvaVersion + "," + definitionLang + "," + meaningLang;
-	}
-	
-	
+	}	
 }

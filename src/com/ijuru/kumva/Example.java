@@ -23,15 +23,24 @@ public class Example {
 	private String usage;
 	private String meaning;
 	
+	/**
+	 * Default constructor
+	 */
 	public Example() {
 	}
 	
+	/**
+	 * Creates an example
+	 * @param usage
+	 * @param meaning
+	 */
 	public Example(String usage, String meaning) {
 		this.usage = usage;
 		this.meaning = meaning;
 	}
 
 	/**
+	 * Gets the usage
 	 * @return the usage
 	 */
 	public String getUsage() {
@@ -39,13 +48,15 @@ public class Example {
 	}
 
 	/**
-	 * @param usage the usage to set
+	 * Sets the usage
+	 * @param usage the usage
 	 */
 	public void setUsage(String usage) {
 		this.usage = usage;
 	}
 
 	/**
+	 * Gets the meaning
 	 * @return the meaning
 	 */
 	public String getMeaning() {
@@ -53,7 +64,8 @@ public class Example {
 	}
 
 	/**
-	 * @param meaning the meaning to set
+	 * Sets the meaning
+	 * @param meaning the meaning
 	 */
 	public void setMeaning(String meaning) {
 		this.meaning = meaning;

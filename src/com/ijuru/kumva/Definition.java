@@ -105,6 +105,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the modifier e.g. the plural prefix or past tense stem
 	 * @return the modifier
 	 */
 	public String getModifier() {
@@ -112,6 +113,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Sets the modifier e.g. the plural prefix or past tense stem
 	 * @param modifier the modifier to set
 	 */
 	public void setModifier(String modifier) {
@@ -119,6 +121,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the pronunciation
 	 * @return the pronunciation
 	 */
 	public String getPronunciation() {
@@ -126,13 +129,15 @@ public class Definition {
 	}
 	
 	/**
-	 * @param pronunciation the pronunciation to set
+	 * Sets the pronunciation
+	 * @param pronunciation the pronunciation
 	 */
 	public void setPronunciation(String pronunciation) {
 		this.pronunciation = pronunciation;
 	}
 	
 	/**
+	 * Gets the meanings
 	 * @return the meanings
 	 */
 	public List<Meaning> getMeanings() {
@@ -140,6 +145,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Adds a new meaning
 	 * @param meaning the meaning to add
 	 */
 	public void addMeaning(Meaning meaning) {
@@ -147,6 +153,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the comment
 	 * @return the comment
 	 */
 	public String getComment() {
@@ -154,6 +161,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Sets the comment
 	 * @param comment the comment to set
 	 */
 	public void setComment(String comment) {
@@ -179,6 +187,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Gets the usage examples
 	 * @return the examples
 	 */
 	public List<Example> getExamples() {
@@ -186,6 +195,7 @@ public class Definition {
 	}
 	
 	/**
+	 * Adds a new usage example
 	 * @param example the example to add
 	 */
 	public void addExample(Example example) {
@@ -193,7 +203,7 @@ public class Definition {
 	}
 
 	/**
-	 * Gets the audio URL
+	 * Gets the audio URL (null if one doesn't exist)
 	 * @return the audioURL
 	 */
 	public String getAudioURL() {
