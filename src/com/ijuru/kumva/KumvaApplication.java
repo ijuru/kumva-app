@@ -40,17 +40,6 @@ public class KumvaApplication extends Application {
 	
 	private final String PREF_FILE_DICTS = "dictionaries";
 	private final String PREF_KEY_ACTIVEDICT = "active_dict";
-	
-	/**
-	 * Constructs the Kumva application
-	 */
-	public KumvaApplication() {
-		// Add kinyarwanda.net
-		Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
-		
-		dictionaries.add(kinyaDict);
-		this.activeDictionary = kinyaDict;
-	}
 
 	/**
 	 * @see android.app.Application#onCreate()
