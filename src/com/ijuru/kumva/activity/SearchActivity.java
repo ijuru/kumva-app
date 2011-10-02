@@ -161,7 +161,7 @@ public class SearchActivity extends Activity implements SearchListener {
     		progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
     		
     		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    		int limit = Utils.parseInteger(prefs.getString("max_results", "50"));
+    		Integer limit = Utils.parseInteger(prefs.getString("max_results", "50"));
     		
 	    	Search search = activeDictionary.createSearch();
 	    	search.addListener(this);

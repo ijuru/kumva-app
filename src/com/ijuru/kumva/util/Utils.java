@@ -100,8 +100,11 @@ public class Utils {
 		List<Integer> ints = new ArrayList<Integer>();
 		for (String val : vals) {
 			String v = val.trim();
-			if (v.length() > 0)
-				ints.add(Integer.parseInt(val));
+			if (v.length() > 0) {
+				Integer n = parseInteger(v);
+				if (n != null)
+					ints.add(n);
+			}
 		}
 		return ints;
 	}
