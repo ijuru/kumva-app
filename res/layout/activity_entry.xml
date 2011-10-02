@@ -7,9 +7,9 @@
     	android:id="@+id/entrytitle" 
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content"
-    	android:background="#9db272"
+    	android:background="@color/header_background"
     	android:text="@string/str_entrydetails"
-    	android:textColor="#334422"
+    	android:textColor="@color/header_text"
     	android:textStyle="bold"
     	android:textSize="20sp"
     	android:padding="10dp">
@@ -34,7 +34,7 @@
 				 	android:textStyle="bold"
 				    android:paddingRight="0dp"
 				    android:textSize="16sp"
-				    android:textColor="#BBBBFF" >
+				    android:textColor="@color/prefix" >
 				</TextView>
 				<TextView
 				    android:id="@+id/lemma"
@@ -43,7 +43,7 @@
 				 	android:textStyle="bold"
 				    android:paddingRight="2dp"
 				    android:textSize="16sp"
-				    android:textColor="#BBFFBB" >
+				    android:textColor="@color/lemma" >
 				</TextView>
 				<TextView
 				    android:id="@+id/modifier"
@@ -138,7 +138,7 @@
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:padding="10dp"
-			    android:textColor="#d2cda6"
+			    android:textColor="@color/example"
 			    android:textSize="14sp" >
 			</TextView>
 			
