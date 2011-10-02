@@ -109,7 +109,7 @@ public class EntryActivity extends Activity {
 			wordclass.setVisibility(View.GONE);
 		
 		setItemTextOrHide(R.id.meaning, Format.meanings(this, definition.getMeanings()));
-		setItemTextOrHide(R.id.comment, Format.parseReferences(this, definition.getComment()));	
+		setItemTextOrHide(R.id.comment, Format.parseQueryLinks(this, definition.getComment()));	
 		setItemTextOrHide(R.id.derivation, Format.rootList(this, dictionary.getDefinitionLang(), definition.getTags("root")));
 		setItemTextOrHide(R.id.examples, Format.examples(definition.getExamples()));
 	}
