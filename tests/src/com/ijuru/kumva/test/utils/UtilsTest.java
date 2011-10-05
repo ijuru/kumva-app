@@ -31,7 +31,7 @@ import android.test.AndroidTestCase;
  */
 public class UtilsTest extends AndroidTestCase {
 	public void test_getVersionName() {
-		assertEquals("1.4", Utils.getVersionName(getContext()));
+		assertEquals("1.4.1", Utils.getVersionName(getContext()));
 	}
 	
 	public void test_isEmpty() {
@@ -52,6 +52,14 @@ public class UtilsTest extends AndroidTestCase {
 		assertNull(Utils.parseInteger("1.5"));
 		assertEquals(new Integer(-123), Utils.parseInteger("-123"));
 		assertEquals(new Integer(456), Utils.parseInteger("456"));
+	}
+	
+	public void test_pixels() {
+		float scale = getContext().getResources().getDisplayMetrics().density;
+		
+		assertEquals((int)(0 * scale + 0.5f), Utils.pixels(getContext(), 0));
+		assertEquals((int)(1 * scale + 0.5f), Utils.pixels(getContext(), 1));
+		assertEquals((int)(123 * scale + 0.5f), Utils.pixels(getContext(), 123));
 	}
 	
 	public void test_getLanguageName() {

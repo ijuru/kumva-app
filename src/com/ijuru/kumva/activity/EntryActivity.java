@@ -23,18 +23,14 @@ import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
-import com.ijuru.kumva.util.Dialogs;
+import com.ijuru.kumva.ui.AudioButton;
 import com.ijuru.kumva.util.Format;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -43,9 +39,6 @@ import android.widget.TextView;
 public class EntryActivity extends Activity {
 	
 	private Definition definition;
-	private AnimationDrawable animLoading;
-	private Drawable pauseIcon;
-	private MediaPlayer player = new MediaPlayer();
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -63,15 +56,13 @@ public class EntryActivity extends Activity {
 		((TextView)findViewById(R.id.headerExamples)).setText(R.string.str_examples);
 		
 		this.definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
-		this.pauseIcon = getResources().getDrawable(R.drawable.ic_pause);
-		this.animLoading = (AnimationDrawable)getResources().getDrawable(R.drawable.am_loading);
-		 
+
 		setItemTextOrHide(R.id.prefix, definition.getPrefix());
 		setItemTextOrHide(R.id.lemma, definition.getLemma());
 		
 		TextView modifier = (TextView)findViewById(R.id.modifier);
 		TextView pronunciation = (TextView)findViewById(R.id.pronunciation);
-		Button audioBtn = (Button)findViewById(R.id.audiobtn);
+		AudioButton audioBtn = (AudioButton)findViewById(R.id.audiobtn);
 		TextView wordclass = (TextView)findViewById(R.id.wordclass);
 		
 		// Display modifier in brackets
@@ -85,7 +76,9 @@ public class EntryActivity extends Activity {
 			pronunciation.setVisibility(View.GONE);
 		
 		// Display audio button if there is a URL
-		if (Utils.isEmpty(definition.getAudioURL()))
+		if (!Utils.isEmpty(definition.getAudioURL())) 
+			audioBtn.setAudioURL(definition.getAudioURL());
+		else
 			audioBtn.setVisibility(View.GONE);
 		
 		// Display word class and noun classes
@@ -127,68 +120,5 @@ public class EntryActivity extends Activity {
 			view.setText(text);
 		else
 			view.setVisibility(View.GONE);
-	}
-	
-	/**
-	 * Called when user clicks the listen/pause button
-	 * @param view the view
-	 */
-	public void playAudio(View view) {	
-		final Button audioBtn = (Button)findViewById(R.id.audiobtn);
-		final Drawable listenIcon = audioBtn.getCompoundDrawables()[0];
-		pauseIcon.setBounds(listenIcon.getBounds());
-		
-		// If audio is playing then this is a pause button
-		if (player.isPlaying()) {
-			player.stop();
-			audioBtn.setCompoundDrawables(listenIcon, null, null, null);
-		}
-		else {
-			// Set animated throbber
-			animLoading.setBounds(listenIcon.getBounds());
-			audioBtn.setCompoundDrawables(animLoading, null, null, null);
-			audioBtn.setEnabled(false);
-			
-			// Start animation
-			animLoading.setOneShot(false);
-			animLoading.start();
-			
-			try {
-				// Reset player and connect to audio URL
-				player.reset();
-				player.setDataSource(definition.getAudioURL());
-				player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {	
-					@Override
-					public void onPrepared(MediaPlayer arg0) {
-						// Switch to pause icon
-						animLoading.stop();
-						audioBtn.setEnabled(true);
-						audioBtn.setCompoundDrawables(pauseIcon, null, null, null);
-						
-						// Play audio
-						player.start();
-					}
-				});
-				player.setOnErrorListener(new MediaPlayer.OnErrorListener() {		
-					@Override
-					public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
-						animLoading.stop();
-						audioBtn.setEnabled(true);
-						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
-						Dialogs.toast(EntryActivity.this, getString(R.string.err_communicationfailed));
-						return true;
-					}
-				});
-				player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {	
-					@Override
-					public void onCompletion(MediaPlayer arg0) {
-						audioBtn.setCompoundDrawables(listenIcon, null, null, null);
-					}
-				});
-				player.prepareAsync();
-			} catch (Exception e) {
-				Dialogs.toast(this, getString(R.string.err_communicationfailed));
-			}
-		}
 	}
 }

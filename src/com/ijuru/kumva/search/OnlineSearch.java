@@ -57,6 +57,19 @@ public class OnlineSearch extends Search implements DefinitionListener {
 	 */
 	@Override
 	public SearchResult doSearch(String query, int limit) {
+		/*if (query.equals("@@test")) {
+			Definition def = new Definition();
+			def.setWordClass("n");
+			def.setPrefix("ama");
+			def.setLemma("testi");
+			def.setModifier("ubu-");
+			def.addMeaning(new Meaning("I'm secret just for testing", 0));
+			def.addMeaning(new Meaning("Cuz the internet doesn't always work", 0));
+			def.setAudioURL("http://kinyarwanda.net/media/audio/1921.mp3");
+			results.add(def);
+			return new SearchResult(null, results);
+		}*/
+		
 		try {		
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser parser = factory.newSAXParser();

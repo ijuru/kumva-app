@@ -82,6 +82,17 @@ public class Utils {
 	}
 	
 	/**
+	 * Converts a pixel value to a device-independent pixel value
+	 * @param context the context
+	 * @param pixels the pixel value
+	 * @return the device-independent pixel value
+	 */
+	public static int pixels(Context context, int pixels) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (pixels * scale + 0.5f);
+	}
+	
+	/**
 	 * Converts a ISO-639 language code to a language name
 	 * @param code the code
 	 * @return the name

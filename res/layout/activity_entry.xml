@@ -70,16 +70,12 @@
 				    android:paddingRight="5dp"
 				    android:textSize="14sp" >
 				</TextView>
-				<Button
+				<com.ijuru.kumva.ui.AudioButton
 					android:id="@+id/audiobtn"
 					android:text="@string/str_listen" 
-					android:gravity="left|center_vertical"
-					android:drawableLeft="@drawable/ic_listen"
-					android:drawablePadding="4sp"
 			        android:layout_height="wrap_content" 
-			        android:layout_width="wrap_content"
-			        android:onClick="playAudio">
-				</Button>
+			        android:layout_width="wrap_content">
+				</com.ijuru.kumva.ui.AudioButton>
 			</LinearLayout>
 			
 			<!-- =============== Meaning section =============== -->
