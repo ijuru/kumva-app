@@ -27,6 +27,7 @@ import com.ijuru.kumva.util.Dialogs;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 
 /**
@@ -37,6 +38,7 @@ public class KumvaApplication extends Application {
 	private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
 	private Dictionary activeDictionary = null;
 	private Definition definition;
+	private MediaPlayer player;
 	
 	private final String PREF_FILE_DICTS = "dictionaries";
 	private final String PREF_KEY_ACTIVEDICT = "active_dict";
@@ -62,6 +64,8 @@ public class KumvaApplication extends Application {
 			this.dictionaries.add(kinyaDict);
 			this.activeDictionary = kinyaDict;
 		}
+		
+		this.player = new MediaPlayer();
 	}
 		
 	/**
@@ -196,5 +200,13 @@ public class KumvaApplication extends Application {
 	 */
 	public void setCurrentDefinition(Definition definition) {
 		this.definition = definition;
+	}
+	
+	/**
+	 * Gets the media player
+	 * @return the media player
+	 */
+	public MediaPlayer getMediaPlayer() {
+		return player;
 	}
 }

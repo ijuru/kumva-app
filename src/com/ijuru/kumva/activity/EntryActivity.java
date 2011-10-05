@@ -48,14 +48,16 @@ public class EntryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_entry);
 		
-		Dictionary dictionary = ((KumvaApplication)getApplication()).getActiveDictionary();
+		KumvaApplication app = (KumvaApplication)getApplication();
+		
+		Dictionary dictionary = app.getActiveDictionary();
 		
 		((TextView)findViewById(R.id.headerPronunciation)).setText(R.string.str_pronunciation);
 		((TextView)findViewById(R.id.headerMeaning)).setText(R.string.str_meaning);
 		((TextView)findViewById(R.id.headerDerivation)).setText(R.string.str_derivation);
 		((TextView)findViewById(R.id.headerExamples)).setText(R.string.str_examples);
 		
-		this.definition = ((KumvaApplication)getApplication()).getCurrentDefinition();
+		this.definition = app.getCurrentDefinition();
 
 		setItemTextOrHide(R.id.prefix, definition.getPrefix());
 		setItemTextOrHide(R.id.lemma, definition.getLemma());
@@ -76,8 +78,10 @@ public class EntryActivity extends Activity {
 			pronunciation.setVisibility(View.GONE);
 		
 		// Display audio button if there is a URL
-		if (!Utils.isEmpty(definition.getAudioURL())) 
+		if (!Utils.isEmpty(definition.getAudioURL())) {
+			audioBtn.setMediaPlayer(app.getMediaPlayer());
 			audioBtn.setAudioURL(definition.getAudioURL());
+		}
 		else
 			audioBtn.setVisibility(View.GONE);
 		

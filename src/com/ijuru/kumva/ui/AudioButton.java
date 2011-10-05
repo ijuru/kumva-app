@@ -40,7 +40,7 @@ public class AudioButton extends Button implements View.OnClickListener {
 	private String audioURL;
 	private Drawable playIcon, pauseIcon;
 	private AnimationDrawable animLoading;
-	private MediaPlayer player = new MediaPlayer();
+	private MediaPlayer player;
 	
 	/**
 	 * Creates a new audio button
@@ -114,6 +114,14 @@ public class AudioButton extends Button implements View.OnClickListener {
 				Dialogs.toast(AudioButton.this.getContext(), getContext().getString(R.string.err_communicationfailed));
 			}
 		}
+	}
+	
+	/**
+	 * Sets the media player
+	 * @param player the media player
+	 */
+	public void setMediaPlayer(MediaPlayer player) {
+		this.player = player;
 	}
 	
 	/**

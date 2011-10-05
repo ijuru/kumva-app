@@ -81,8 +81,10 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			URL url = dictionary.createQueryURL(query, limit);
 			URLConnection connection = url.openConnection();
 			
-			// Request GZIP compression
+			// Request GZIP compression and specify timeout
 			connection.setRequestProperty("Accept-Encoding", "gzip");
+			connection.setConnectTimeout(20000);
+			connection.setReadTimeout(20000);
 			
 			// Detect GZIP compression if used
 			InputStream stream = connection.getInputStream();
