@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference 
     	android:title="@string/str_maximumresults" 
-    	android:key="max_results" 
-    	android:defaultValue="50">
+    	android:key="max_results"
+    	android:defaultValue="@integer/def_max_results">
     </EditTextPreference>
 </PreferenceScreen>

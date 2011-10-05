@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer name="min_max_results">1</integer>
+	<integer name="def_max_results">50</integer>
+	<integer name="max_max_results">100</integer>
+</resources>

@@ -22,6 +22,7 @@ package com.ijuru.kumva.activity;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.util.Utils;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -35,12 +36,6 @@ import android.widget.Toast;
 public class PreferencesActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
 	private EditTextPreference maxResultsPref;
-	
-	/**
-	 * Valid range for maximum results preference
-	 */
-	private final int MIN_MAX_RESULTS = 1;
-	private final int MAX_MAX_RESULTS = 100;
 	
 	/**
 	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
@@ -57,10 +52,12 @@ public class PreferencesActivity extends PreferenceActivity implements OnPrefere
 
 	@Override
 	public boolean onPreferenceChange(Preference pref, Object value) {
+		Resources res = getResources();
+		
 		if (maxResultsPref == pref) {
 			Integer max = Utils.parseInteger(value.toString());
-			if (max == null || max < MIN_MAX_RESULTS || max > MAX_MAX_RESULTS) {
-				String message = String.format(getString(R.string.err_numberrange), MIN_MAX_RESULTS, MAX_MAX_RESULTS);
+			if (max == null || max < res.getInteger(R.integer.min_max_results) || max > res.getInteger(R.integer.max_max_results)) {
+				String message = String.format(getString(R.string.err_numberrange), res.getInteger(R.integer.min_max_results), res.getInteger(R.integer.max_max_results));
 				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 				return false;
 			}
