@@ -46,9 +46,7 @@ import android.widget.ListView;
  * Activity to display dictionary list and allow users to add new dictionaries
  * and update or remove existing ones
  */
-public class DictionariesActivity extends ListActivity implements 
-		FetchTask.OnCompleteListener<Dictionary>,
-		FetchTask.OnErrorListener<Dictionary>{
+public class DictionariesActivity extends ListActivity implements FetchTask.FetchListener<Dictionary>{
 
 	private DictionaryListAdapter adapter;
 	private Dictionary editDictionary;
@@ -178,8 +176,7 @@ public class DictionariesActivity extends ListActivity implements
 		progressDialog = ProgressDialog.show(this, getString(R.string.str_fetching), getString(R.string.str_pleasewait));
 		
 		FetchDictionaryTask task = new FetchDictionaryTask();
-		task.setOnCompletedListener(this);
-		task.setOnErrorListener(this);
+		task.setListener(this);
 		task.execute(url);
 	}
 	
@@ -235,10 +232,10 @@ public class DictionariesActivity extends ListActivity implements
 	}
 
 	/**
-	 * @see com.ijuru.kumva.util.FetchTask.OnCompleteListener#onFetchComplete(Object)
+	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
 	 */
 	@Override
-	public void onFetchComplete(Dictionary dictionary) {
+	public void onFetchCompleted(FetchTask<Dictionary> task, Dictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
 		
 		// Hide the progress dialog
@@ -252,10 +249,10 @@ public class DictionariesActivity extends ListActivity implements
 	}
 	
 	/**
-	 * @see com.ijuru.kumva.util.FetchTask.OnErrorListener#onFetchError(Object)
+	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchError(FetchTask)
 	 */
 	@Override
-	public void onFetchError() {
+	public void onFetchError(FetchTask<Dictionary> task) {
 		// Hide the progress dialog
 		progressDialog.dismiss();
 		

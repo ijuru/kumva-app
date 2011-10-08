@@ -42,8 +42,7 @@ import android.widget.Button;
  */
 public class AudioButton extends Button implements 
 		View.OnClickListener, 
-		FetchTask.OnCompleteListener<Boolean>,
-		FetchTask.OnErrorListener<Boolean>, 
+		FetchTask.FetchListener<Boolean>,
 		MediaPlayer.OnPreparedListener,
 		MediaPlayer.OnCompletionListener,
 		MediaPlayer.OnErrorListener {
@@ -94,13 +93,12 @@ public class AudioButton extends Button implements
 					
 			try {
 				if (cached) {
-					onFetchComplete(true);
+					onFetchCompleted(null, true);
 				}
 				else {
 					int timeout = getContext().getResources().getInteger(R.integer.connection_timeout);
 					FetchToFileTask audioFetchTask = new FetchToFileTask(cacheFile, timeout);
-					audioFetchTask.setOnCompletedListener(this);
-					audioFetchTask.setOnErrorListener(this);
+					audioFetchTask.setListener(this);
 					audioFetchTask.execute(audioURL);
 				}	
 				
@@ -110,8 +108,11 @@ public class AudioButton extends Button implements
 		}
 	}
 	
+	/**
+	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
+	 */
 	@Override
-	public void onFetchComplete(Boolean result) {
+	public void onFetchCompleted(FetchTask<Boolean> task, Boolean result) {
 		cached = true;
 		
 		try {
@@ -128,8 +129,11 @@ public class AudioButton extends Button implements
 		}
 	}
 	
+	/**
+	 * com.ijuru.kumva.util.FetchTask.FetchListener#onFetchError(FetchTask)
+	 */
 	@Override
-	public void onFetchError() {
+	public void onFetchError(FetchTask<Boolean> task) {
 		cached = false;
 		error();
 	}

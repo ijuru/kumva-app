@@ -36,11 +36,17 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 	 */
 	public interface SearchListener {
 		/**
-		 * Called when a search has completed
+		 * Called when a search has successfully completed
 		 * @param search the search
-		 * @param result the search results or null if search failed
+		 * @param result the search results
 		 */
-		public void searchFinished(Search search, SearchResult result);
+		public void onSearchCompleted(Search search, SearchResult result);
+		
+		/**
+		 * Called when a search resulted in an error
+		 * @param search the search
+		 */
+		public void onSearchError(Search search);
 	}
 	
 	/**
@@ -73,8 +79,12 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 	 */
 	@Override
 	protected void onPostExecute(SearchResult result) {
-		if (listener != null)
-			listener.searchFinished(this, result);
+		if (listener != null) {
+			if (result != null)
+				listener.onSearchCompleted(this, result);
+			else
+				listener.onSearchError(this);
+		}
 	}
 
 	/**

@@ -32,6 +32,8 @@ import com.ijuru.kumva.util.Utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -51,9 +53,11 @@ import android.widget.TextView;
 /**
  * Main activity for searching a dictionary
  */
-public class SearchActivity extends Activity implements Search.SearchListener {
+public class SearchActivity extends Activity implements Search.SearchListener, OnCancelListener {
+	
 	private DefinitionListAdapter adapter;
 	private ProgressDialog progressDialog;
+	private Search search;
 	
     /**
      * Called when the activity is first created
@@ -158,13 +162,15 @@ public class SearchActivity extends Activity implements Search.SearchListener {
     	
     	if (activeDictionary != null) {
     		progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
+    		progressDialog.setCancelable(true);
+    		progressDialog.setOnCancelListener(this);
     		
     		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     		Integer limit = Utils.parseInteger(prefs.getString("max_results", "50"));
     		
     		int timeout = getResources().getInteger(R.integer.connection_timeout);
     		
-	    	Search search = activeDictionary.createSearch(timeout);
+	    	search = activeDictionary.createSearch(timeout);
 	    	search.setListener(this);
 	    	search.execute(query, limit);
     	}
@@ -173,19 +179,14 @@ public class SearchActivity extends Activity implements Search.SearchListener {
     }
 
 	/**
-     * Called when search completes
+     * Called when search completes successfully
      */
     @Override
-	public void searchFinished(Search search, SearchResult result) {
+	public void onSearchCompleted(Search search, SearchResult result) {
 		// Hide the progress dialog
-		if (progressDialog != null)
-			progressDialog.dismiss();
-	
-		if (result == null) {
-			// Null result means some kind of error so display error message
-			Dialogs.toast(this, getString(R.string.err_communicationfailed));
-		}
-		else if (result.getMatches().size() == 0) {
+    	progressDialog.dismiss();
+			
+		if (result.getMatches().size() == 0) {
 			// Tell user no results... sorry
 			setStatusMessage(getString(R.string.str_noresults));
 		}
@@ -199,6 +200,13 @@ public class SearchActivity extends Activity implements Search.SearchListener {
 				setStatusMessage(message);
 			}
 		}
+	}
+    
+    @Override
+	public void onSearchError(Search search) {
+    	// Hide the progress dialog and display error message
+    	progressDialog.dismiss();
+    	Dialogs.toast(this, getString(R.string.err_communicationfailed));
 	}
 	
     /**
@@ -255,5 +263,10 @@ public class SearchActivity extends Activity implements Search.SearchListener {
 				"If you have any problems please contact rowan@ijuru.com";
 		
 		Dialogs.alert(this, title, message);
-	}	
+	}
+
+	@Override
+	public void onCancel(DialogInterface dialog) {
+		search.cancel(true);
+	}
 }
