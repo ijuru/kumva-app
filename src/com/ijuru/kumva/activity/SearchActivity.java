@@ -24,7 +24,6 @@ import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.search.Search;
-import com.ijuru.kumva.search.SearchListener;
 import com.ijuru.kumva.search.SearchResult;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
 import com.ijuru.kumva.util.Dialogs;
@@ -52,7 +51,7 @@ import android.widget.TextView;
 /**
  * Main activity for searching a dictionary
  */
-public class SearchActivity extends Activity implements SearchListener {
+public class SearchActivity extends Activity implements Search.SearchListener {
 	private DefinitionListAdapter adapter;
 	private ProgressDialog progressDialog;
 	
@@ -166,7 +165,7 @@ public class SearchActivity extends Activity implements SearchListener {
     		int timeout = getResources().getInteger(R.integer.connection_timeout);
     		
 	    	Search search = activeDictionary.createSearch(timeout);
-	    	search.addListener(this);
+	    	search.setListener(this);
 	    	search.execute(query, limit);
     	}
     	else

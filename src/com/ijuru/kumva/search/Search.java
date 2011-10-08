@@ -19,9 +19,6 @@
 
 package com.ijuru.kumva.search;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ijuru.kumva.Dictionary;
 
 import android.os.AsyncTask;
@@ -32,7 +29,19 @@ import android.os.AsyncTask;
 public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 
 	protected Dictionary dictionary;
-	protected List<SearchListener> listeners = new ArrayList<SearchListener>();
+	protected SearchListener listener;
+	
+	/**
+	 * Listener class for search tasks
+	 */
+	public interface SearchListener {
+		/**
+		 * Called when a search has completed
+		 * @param search the search
+		 * @param result the search results or null if search failed
+		 */
+		public void searchFinished(Search search, SearchResult result);
+	}
 	
 	/**
 	 * Creates a search on the given dictionary
@@ -42,11 +51,11 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 		this.dictionary = dictionary;
 	}
 	/**
-	 * Adds a search listener
+	 * Sets the search listener
 	 * @param listener the listener
 	 */
-	public void addListener(SearchListener listener) {
-		listeners.add(listener);
+	public void setListener(SearchListener listener) {
+		this.listener = listener;
 	}
 
 	/**
@@ -64,7 +73,7 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 	 */
 	@Override
 	protected void onPostExecute(SearchResult result) {
-		for (SearchListener listener : listeners)
+		if (listener != null)
 			listener.searchFinished(this, result);
 	}
 
