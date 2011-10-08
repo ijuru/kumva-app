@@ -163,7 +163,9 @@ public class SearchActivity extends Activity implements SearchListener {
     		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     		Integer limit = Utils.parseInteger(prefs.getString("max_results", "50"));
     		
-	    	Search search = activeDictionary.createSearch();
+    		int timeout = getResources().getInteger(R.integer.connection_timeout);
+    		
+	    	Search search = activeDictionary.createSearch(timeout);
 	    	search.addListener(this);
 	    	search.execute(query, limit);
     	}

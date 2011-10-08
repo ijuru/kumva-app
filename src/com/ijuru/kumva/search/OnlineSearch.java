@@ -41,15 +41,18 @@ import com.ijuru.kumva.xml.QueryXMLHandler;
  */
 public class OnlineSearch extends Search implements DefinitionListener {
 	
+	private int timeout;
 	private List<Definition> results = new ArrayList<Definition>();
-	private Dictionary dictionary;
 	
 	/**
-	 * Constructs an online search from the given URL of a Kumva dictionary
-	 * @param url the URL
+	 * Constructs an online search from the given dictionary
+	 * @param dictionary the dictionary
+	 * @param timeout the connection timeout
 	 */
-	public OnlineSearch(Dictionary dictionary) {
-		this.dictionary = dictionary;
+	public OnlineSearch(Dictionary dictionary, int timeout) {
+		super(dictionary);
+		
+		this.timeout = timeout;
 	}
 	
 	/**
@@ -83,8 +86,8 @@ public class OnlineSearch extends Search implements DefinitionListener {
 			
 			// Request GZIP compression and specify timeout
 			connection.setRequestProperty("Accept-Encoding", "gzip");
-			connection.setConnectTimeout(20000);
-			connection.setReadTimeout(20000);
+			connection.setConnectTimeout(timeout);
+			connection.setReadTimeout(timeout);
 			
 			// Detect GZIP compression if used
 			InputStream stream = connection.getInputStream();

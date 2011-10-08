@@ -166,10 +166,11 @@ public class Dictionary {
 
 	/**
 	 * Creates a new search which can query this dictionary
+	 * @param timeout the timeout
 	 * @return the search
 	 */
-	public Search createSearch() {
-		return new OnlineSearch(this);
+	public Search createSearch(int timeout) {
+		return new OnlineSearch(this, timeout);
 	}
 
 	/**
