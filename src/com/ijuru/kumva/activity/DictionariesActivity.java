@@ -26,8 +26,8 @@ import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.ui.DictionaryListAdapter;
 import com.ijuru.kumva.util.Dialogs;
-import com.ijuru.kumva.util.FetchDictionaryListener;
 import com.ijuru.kumva.util.FetchDictionaryTask;
+import com.ijuru.kumva.util.FetchTask;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -42,7 +42,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class DictionariesActivity extends ListActivity implements FetchDictionaryListener {
+/**
+ * Activity to display dictionary list and allow users to add new dictionaries
+ * and update or remove existing ones
+ */
+public class DictionariesActivity extends ListActivity implements 
+		FetchTask.OnCompleteListener<Dictionary>,
+		FetchTask.OnErrorListener<Dictionary>{
 
 	private DictionaryListAdapter adapter;
 	private Dictionary editDictionary;
@@ -172,7 +178,8 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 		progressDialog = ProgressDialog.show(this, getString(R.string.str_fetching), getString(R.string.str_pleasewait));
 		
 		FetchDictionaryTask task = new FetchDictionaryTask();
-		task.addListener(this);
+		task.setOnCompletedListener(this);
+		task.setOnErrorListener(this);
 		task.execute(url);
 	}
 	
@@ -228,24 +235,30 @@ public class DictionariesActivity extends ListActivity implements FetchDictionar
 	}
 
 	/**
-	 * @see com.ijuru.kumva.util.FetchDictionaryListener#dictionaryFetched(Dictionary)
+	 * @see com.ijuru.kumva.util.FetchTask.OnCompleteListener#onFetchComplete(Object)
 	 */
 	@Override
-	public void dictionaryFetched(Dictionary dictionary) {
+	public void onFetchComplete(Dictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
 		
 		// Hide the progress dialog
-		if (progressDialog != null)
-			progressDialog.dismiss();
+		progressDialog.dismiss();
 		
-		if (dictionary != null) {
-			// Look for dictionary with same URL which needs to be replaced
-			Dictionary existing = app.getDictionaryByURL(dictionary.getURL());
-			removeDictionary(existing);
+		// Look for dictionary with same URL which needs to be replaced
+		Dictionary existing = app.getDictionaryByURL(dictionary.getURL());
+		removeDictionary(existing);
 			
-			addDictionary(dictionary);
-		}
-		else
-			Dialogs.toast(this, getString(R.string.err_communicationfailed));
+		addDictionary(dictionary);
+	}
+	
+	/**
+	 * @see com.ijuru.kumva.util.FetchTask.OnErrorListener#onFetchError(Object)
+	 */
+	@Override
+	public void onFetchError() {
+		// Hide the progress dialog
+		progressDialog.dismiss();
+		
+		Dialogs.toast(this, getString(R.string.err_communicationfailed));
 	}
 }

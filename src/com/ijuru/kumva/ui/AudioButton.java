@@ -19,8 +19,13 @@
 
 package com.ijuru.kumva.ui;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import com.ijuru.kumva.R;
 import com.ijuru.kumva.util.Dialogs;
+import com.ijuru.kumva.util.FetchTask;
+import com.ijuru.kumva.util.FetchToFileTask;
 import com.ijuru.kumva.util.Utils;
 
 import android.content.Context;
@@ -35,8 +40,16 @@ import android.widget.Button;
 /**
  * Custom button for playing definition audio clips
  */
-public class AudioButton extends Button implements View.OnClickListener {
+public class AudioButton extends Button implements 
+		View.OnClickListener, 
+		FetchTask.OnCompleteListener<Boolean>,
+		FetchTask.OnErrorListener<Boolean>, 
+		MediaPlayer.OnPreparedListener,
+		MediaPlayer.OnCompletionListener,
+		MediaPlayer.OnErrorListener {
 
+	boolean cached = false;
+	private File cacheFile;
 	private String audioURL;
 	private Drawable playIcon, pauseIcon;
 	private AnimationDrawable animLoading;
@@ -49,6 +62,8 @@ public class AudioButton extends Button implements View.OnClickListener {
 	 */
 	public AudioButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		
+		cacheFile = new File(getContext().getCacheDir(), "temp.mp3");
 		
 		playIcon = getResources().getDrawable(R.drawable.ic_listen);
 		pauseIcon = getResources().getDrawable(R.drawable.ic_pause);
@@ -78,42 +93,77 @@ public class AudioButton extends Button implements View.OnClickListener {
 			animLoading.start();
 					
 			try {
-				// Reset player and connect to audio URL
-				player.reset();
-				player.setDataSource(audioURL);
-				player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {	
-					@Override
-					public void onPrepared(MediaPlayer arg0) {
-						// Switch to pause icon
-						animLoading.stop();
-						setEnabled(true);
-						setCompoundDrawablesWithIntrinsicBounds(pauseIcon, null, null, null);
-						
-						// Play audio
-						player.start();
-					}
-				});
-				player.setOnErrorListener(new MediaPlayer.OnErrorListener() {		
-					@Override
-					public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
-						animLoading.stop();
-						setEnabled(true);
-						setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
-						Dialogs.toast(AudioButton.this.getContext(), getContext().getString(R.string.err_communicationfailed));
-						return true;
-					}
-				});
-				player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {	
-					@Override
-					public void onCompletion(MediaPlayer arg0) {
-						setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
-					}
-				});
-				player.prepareAsync();
+				if (cached) {
+					onFetchComplete(true);
+				}
+				else {
+					int timeout = getContext().getResources().getInteger(R.integer.connection_timeout);
+					FetchToFileTask audioFetchTask = new FetchToFileTask(cacheFile, timeout);
+					audioFetchTask.setOnCompletedListener(this);
+					audioFetchTask.setOnErrorListener(this);
+					audioFetchTask.execute(audioURL);
+				}	
+				
 			} catch (Exception e) {
-				Dialogs.toast(AudioButton.this.getContext(), getContext().getString(R.string.err_communicationfailed));
+				Dialogs.toast(getContext(), getContext().getString(R.string.err_communicationfailed));
 			}
 		}
+	}
+	
+	@Override
+	public void onFetchComplete(Boolean result) {
+		cached = true;
+		
+		try {
+			FileInputStream stream = new FileInputStream(cacheFile);
+			
+			// Reset player and connect to audio URL
+			player.reset();
+			player.setDataSource(stream.getFD());
+			player.prepareAsync();
+			return;
+			
+		} catch (Exception e) {
+			error();
+		}
+	}
+	
+	@Override
+	public void onFetchError() {
+		cached = false;
+		error();
+	}
+	
+	/**
+	 * @see android.media.MediaPlayer.OnPreparedListener#onPrepared(MediaPlayer)
+	 */
+	@Override
+	public void onPrepared(MediaPlayer arg0) {
+		// Switch to pause icon
+		animLoading.stop();
+		setEnabled(true);
+		setCompoundDrawablesWithIntrinsicBounds(pauseIcon, null, null, null);
+		
+		// Play audio
+		player.start();
+	}
+	
+	@Override
+	public void onCompletion(MediaPlayer arg0) {
+		setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
+	}
+	
+	@Override
+	public boolean onError(MediaPlayer player, int arg1, int arg2) {
+		error();
+		return true;
+	}
+	
+	public void error() {
+		animLoading.stop();
+		setEnabled(true);
+		setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
+		Dialogs.toast(AudioButton.this.getContext(), getContext().getString(R.string.err_communicationfailed));
 	}
 	
 	/**
@@ -122,6 +172,9 @@ public class AudioButton extends Button implements View.OnClickListener {
 	 */
 	public void setMediaPlayer(MediaPlayer player) {
 		this.player = player;
+		this.player.setOnPreparedListener(this);
+		this.player.setOnErrorListener(this);
+		this.player.setOnCompletionListener(this);
 	}
 	
 	/**

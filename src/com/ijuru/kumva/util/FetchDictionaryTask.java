@@ -20,8 +20,6 @@
 package com.ijuru.kumva.util;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,26 +30,13 @@ import org.w3c.dom.Node;
 
 import com.ijuru.kumva.Dictionary;
 
-import android.os.AsyncTask;
-
 /**
  * Task to fetch a dictionary's info from the a URL
  */
-public class FetchDictionaryTask extends AsyncTask<String, Void, Dictionary> {
-
-	private List<FetchDictionaryListener> listeners = new ArrayList<FetchDictionaryListener>();
-	
-	/**
-	 * Adds a new fetch listener
-	 * @param listener the listener
-	 */
-	public void addListener(FetchDictionaryListener listener) {
-		listeners.add(listener);
-	}
+public class FetchDictionaryTask extends FetchTask<Dictionary> {
 	
 	@Override
-	protected Dictionary doInBackground(String... params) {
-		String url = params[0];
+	protected Dictionary fetch(String url) {
 		Dictionary dictionary = new Dictionary(url);
 		URL dictURL = dictionary.createInfoURL();
 		if (dictURL == null)
@@ -76,14 +61,5 @@ public class FetchDictionaryTask extends AsyncTask<String, Void, Dictionary> {
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	/**
-	 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-	 */
-	@Override
-	protected void onPostExecute(Dictionary result) {
-		for (FetchDictionaryListener listener : listeners)
-			listener.dictionaryFetched(result);
 	}
 }
