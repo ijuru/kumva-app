@@ -19,14 +19,20 @@
 
 package com.ijuru.kumva.activity;
 
+import java.util.List;
+
 import com.ijuru.kumva.Definition;
 import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.Suggestion;
 import com.ijuru.kumva.search.Search;
 import com.ijuru.kumva.search.SearchResult;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
 import com.ijuru.kumva.util.Dialogs;
+import com.ijuru.kumva.util.FetchSuggestionsTask;
+import com.ijuru.kumva.util.FetchTask;
+import com.ijuru.kumva.util.FetchTask.FetchListener;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
@@ -38,6 +44,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,10 +60,12 @@ import android.widget.TextView;
 /**
  * Main activity for searching a dictionary
  */
-public class SearchActivity extends Activity implements Search.SearchListener, OnCancelListener {
+public class SearchActivity extends Activity implements Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
 	
 	private DefinitionListAdapter adapter;
 	private ProgressDialog progressDialog;
+	private String suggestionsTerm;
+	private FetchSuggestionsTask suggestionsTask;
 	private Search search;
 	
     /**
@@ -73,12 +82,25 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
         this.adapter = new DefinitionListAdapter(this);
         listResults.setAdapter(adapter);
         
+        txtQuery.setOnKeyListener(new View.OnKeyListener() {
+			@Override
+			public boolean onKey(View view, int keyCode, KeyEvent event) {
+				String text = ((TextView)view).getText().toString();
+				if (text.length() >= 3 && !text.equals(suggestionsTerm)) {
+					Log.i("Kumva", "Finding suggestions for: " + text);
+					suggestionsTerm = text;
+					doSuggestions(text);
+				}
+				return false;
+			}
+		});
+        
         txtQuery.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEARCH || event.getAction() == KeyEvent.ACTION_DOWN)
-					doSearch(view);
-					
+					doSearch(view.getText().toString());
+
 				return true;
 			}
 		});
@@ -142,13 +164,12 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
      * Performs a dictionary search
      * @param view the view
      */
-    public void doSearch(View view) {
+    private void doSearch(String query) {	
     	// Clear status message
     	setStatusMessage(null);
     	
-    	// Get query
+    	// Get text field
     	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
-    	String query = txtQuery.getText().toString();
     	
     	// Hide on-screen keyboard
     	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -208,8 +229,38 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
     	progressDialog.dismiss();
     	Dialogs.toast(this, getString(R.string.err_communicationfailed));
 	}
-	
+    
     /**
+     * Performs a lookup of search suggestions
+     * @param query the partial query
+     */
+    private void doSuggestions(String query) {
+    	KumvaApplication app = (KumvaApplication) getApplication();
+    	Dictionary activeDictionary = app.getActiveDictionary();
+    	
+    	if (activeDictionary != null) {
+    		if (suggestionsTask != null)
+    			suggestionsTask.cancel(true);
+    		
+    		int timeout = getResources().getInteger(R.integer.connection_timeout);
+    		suggestionsTask = new FetchSuggestionsTask(activeDictionary, timeout);
+    		suggestionsTask.execute(query);
+    		suggestionsTask.setListener(this);
+    	}
+	}
+	
+	@Override
+	public void onFetchCompleted(FetchTask<List<Suggestion>> task, List<Suggestion> result) {
+		for (Suggestion suggestion : result) {
+			Log.i("Kumva", suggestion.getText() + "[" + suggestion.getLang());
+		}
+	}
+	
+	@Override
+	public void onFetchError(FetchTask<List<Suggestion>> task) {
+	}
+	
+	/**
      * Sets the status message under the query field, or hides it
      * @param message the message or null to hide it
      */

@@ -141,12 +141,7 @@ public class Dictionary {
 	 * @return the URL
 	 */
 	public URL createInfoURL() {
-		String base = this.url.endsWith("/") ? this.url : (this.url + "/");
-		try {
-			return new URL(base + "meta/site.xml.php");
-		} catch (MalformedURLException e) {
-			return null;
-		}
+		return createURL("meta/site.xml.php");
 	}
 	
 	/**
@@ -156,9 +151,27 @@ public class Dictionary {
 	 * @return the URL
 	 */
 	public URL createQueryURL(String query, int limit) {
+		return createURL("meta/query.xml.php?q=" + URLEncoder.encode(query) + "&limit=" + limit + "&entries=1&ref=android");
+	}
+	
+	/**
+	 * Creates a URL to get search suggestions from this dictionary
+	 * @param query the query
+	 * @return the URL
+	 */
+	public URL createSuggestionsURL(String query) {
+		return createURL("meta/suggest.php?term=" + URLEncoder.encode(query) + "&format=jquery");
+	}
+	
+	/**
+	 * Creates a URL to a relative URL in this dictionary
+	 * @param relUrl the relative URL
+	 * @return the URL
+	 */
+	private URL createURL(String relUrl) {
 		String base = this.url.endsWith("/") ? this.url : (this.url + "/");
 		try {
-			return new URL(base + "meta/query.xml.php?q=" + URLEncoder.encode(query) + "&limit=" + limit + "&entries=1&ref=android");
+			return new URL(base + relUrl);
 		} catch (MalformedURLException e) {
 			return null;
 		}

@@ -38,9 +38,11 @@ public class FetchToFileTask extends FetchTask<Boolean> {
 	/**
 	 * Constructs the task with a local file to write to
 	 * @param cacheFile the local file
+	 * @param timeout the timeout in milliseconds
 	 */
 	public FetchToFileTask(File cacheFile, int timeout) {
 		this.cacheFile = cacheFile;
+		this.timeout = timeout;
 	}
 
 	@Override
