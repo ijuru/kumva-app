@@ -4,4 +4,5 @@
 	<integer name="def_max_results">50</integer>
 	<integer name="max_max_results">100</integer>
 	<integer name="connection_timeout">10000</integer>
+	<integer name="min_autocomplete_query_chars">3</integer>
 </resources>

@@ -82,12 +82,13 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
         this.adapter = new DefinitionListAdapter(this);
         listResults.setAdapter(adapter);
         
+        final int minSuggLen = getResources().getInteger(R.integer.min_autocomplete_query_chars);
+        
         txtQuery.setOnKeyListener(new View.OnKeyListener() {
 			@Override
 			public boolean onKey(View view, int keyCode, KeyEvent event) {
 				String text = ((TextView)view).getText().toString();
-				if (text.length() >= 3 && !text.equals(suggestionsTerm)) {
-					Log.i("Kumva", "Finding suggestions for: " + text);
+				if (text.length() >= minSuggLen && !text.equals(suggestionsTerm)) {
 					suggestionsTerm = text;
 					doSuggestions(text);
 				}
