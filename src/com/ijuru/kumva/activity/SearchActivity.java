@@ -29,6 +29,7 @@ import com.ijuru.kumva.Suggestion;
 import com.ijuru.kumva.search.Search;
 import com.ijuru.kumva.search.SearchResult;
 import com.ijuru.kumva.ui.DefinitionListAdapter;
+import com.ijuru.kumva.ui.SuggestionListAdapter;
 import com.ijuru.kumva.util.Dialogs;
 import com.ijuru.kumva.util.FetchSuggestionsTask;
 import com.ijuru.kumva.util.FetchTask;
@@ -44,7 +45,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,9 +60,11 @@ import android.widget.TextView;
 /**
  * Main activity for searching a dictionary
  */
-public class SearchActivity extends Activity implements Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
+public class SearchActivity extends Activity 
+		implements AdapterView.OnItemClickListener, Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
 	
-	private DefinitionListAdapter adapter;
+	private DefinitionListAdapter definitionAdapter;
+	private SuggestionListAdapter suggestionAdapter;
 	private ProgressDialog progressDialog;
 	private String suggestionsTerm;
 	private FetchSuggestionsTask suggestionsTask;
@@ -76,21 +78,23 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
         super.onCreate(savedInstanceState);
     	setContentView(R.layout.activity_search);
         
-        ListView listResults = (ListView)findViewById(R.id.listresults);
         EditText txtQuery = (EditText)findViewById(R.id.queryfield);
         
-        this.adapter = new DefinitionListAdapter(this);
-        listResults.setAdapter(adapter);
+        this.definitionAdapter = new DefinitionListAdapter(this);
+        this.suggestionAdapter = new SuggestionListAdapter(this);
         
         final int minSuggLen = getResources().getInteger(R.integer.min_autocomplete_query_chars);
         
         txtQuery.setOnKeyListener(new View.OnKeyListener() {
 			@Override
 			public boolean onKey(View view, int keyCode, KeyEvent event) {
-				String text = ((TextView)view).getText().toString();
-				if (text.length() >= minSuggLen && !text.equals(suggestionsTerm)) {
-					suggestionsTerm = text;
-					doSuggestions(text);
+				// Only intercept printable characters
+				if (event.getUnicodeChar() > 0) {
+					String text = ((TextView)view).getText().toString();
+					if (text.length() >= minSuggLen && !text.equals(suggestionsTerm)) {
+						suggestionsTerm = text;
+						doSuggestions(text);
+					}
 				}
 				return false;
 			}
@@ -99,32 +103,22 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
         txtQuery.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH || event.getAction() == KeyEvent.ACTION_DOWN)
-					doSearch(view.getText().toString());
+				if (actionId == EditorInfo.IME_ACTION_SEARCH || event.getAction() == KeyEvent.ACTION_DOWN) 
+					onSearchClick(null);
 
 				return true;
 			}
 		});
         
-        listResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Definition definition = (Definition)parent.getItemAtPosition(position);
-				((KumvaApplication)getApplication()).setCurrentDefinition(definition);
-				
-				Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
-				startActivity(intent);
-			}
-		});
+        ListView listResults = (ListView)findViewById(R.id.listresults);
+        listResults.setOnItemClickListener(this);
         
         // Check for an initial query passed via the intent
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 	        String initQuery = (String)extras.get("query");
-	        if (initQuery != null) {
-	        	txtQuery.setText(initQuery);
-	        	doSearch(null);
-	        }
+	        if (initQuery != null)
+	        	doSearch(initQuery);
         }
     }
     
@@ -162,21 +156,31 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
 	}
     
     /**
-     * Performs a dictionary search
+     * Performs a dictionary search (called from event therefore must be public)
      * @param view the view
      */
-    private void doSearch(String query) {	
+    private void doSearch(String query) {
+    	// Cancel any existing suggestion fetch
+		if (suggestionsTask != null)
+			suggestionsTask.cancel(true);
+		
+    	// Switch to definition list view
+    	ListView listResults = (ListView)findViewById(R.id.listresults);
+    	listResults.setAdapter(definitionAdapter);
+    	
     	// Clear status message
     	setStatusMessage(null);
     	
-    	// Get text field
+    	// Set query field and move cursor to end
     	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+    	txtQuery.setText(query);
+    	txtQuery.setSelection(query.length());
     	
     	// Hide on-screen keyboard
     	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     	imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
     	
-    	adapter.clear();
+    	definitionAdapter.clear();
     	
     	// Initiate search of the active dictionary
     	KumvaApplication app = (KumvaApplication) getApplication();
@@ -214,7 +218,7 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
 		}
 		else {
 			for (Definition definition : result.getMatches())
-				adapter.add(definition);
+				definitionAdapter.add(definition);
 			
 			if (!Utils.isEmpty(result.getSuggestion())) {
 				// Update status message to show user the search suggestion
@@ -224,6 +228,9 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
 		}
 	}
     
+    /**
+     * Called if search fails
+     */
     @Override
 	public void onSearchError(Search search) {
     	// Hide the progress dialog and display error message
@@ -236,10 +243,15 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
      * @param query the partial query
      */
     private void doSuggestions(String query) {
+    	// Switch to suggestion list view
+    	ListView listResults = (ListView)findViewById(R.id.listresults);
+    	listResults.setAdapter(suggestionAdapter);
+    	
     	KumvaApplication app = (KumvaApplication) getApplication();
     	Dictionary activeDictionary = app.getActiveDictionary();
     	
     	if (activeDictionary != null) {
+    		// Cancel existing suggestion fetch
     		if (suggestionsTask != null)
     			suggestionsTask.cancel(true);
     		
@@ -250,15 +262,24 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
     	}
 	}
 	
+    /**
+     * Called if suggestion fetch succeeds
+     */
 	@Override
 	public void onFetchCompleted(FetchTask<List<Suggestion>> task, List<Suggestion> result) {
-		for (Suggestion suggestion : result) {
-			Log.i("Kumva", suggestion.getText() + "[" + suggestion.getLang());
-		}
+		suggestionAdapter.clear();
+		
+		// Add suggestions to list
+		for (Suggestion suggestion : result)
+			suggestionAdapter.add(suggestion);
 	}
 	
+	/**
+     * Called if suggestion fetch fails
+     */
 	@Override
 	public void onFetchError(FetchTask<List<Suggestion>> task) {
+		// Awww
 	}
 	
 	/**
@@ -274,6 +295,37 @@ public class SearchActivity extends Activity implements Search.SearchListener, O
     		txtStatus.setText(message);
 	    	txtStatus.setVisibility(View.VISIBLE);
     	}
+	}
+	
+	/**
+	 * Called when the search button is clicked
+	 * @param view the view
+	 */
+	public void onSearchClick(View view) {
+		// Get query field
+    	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+    	String query = txtQuery.getText().toString();
+    	
+		doSearch(query);
+	}
+	
+	/**
+	 * Called when a list item is selected (either a definition or suggestion)
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Object item = parent.getItemAtPosition(position);
+		if (item instanceof Definition) {
+			Definition definition = (Definition)item;
+			((KumvaApplication)getApplication()).setCurrentDefinition(definition);
+			
+			Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
+			startActivity(intent);
+		}
+		else if (item instanceof Suggestion) {
+			Suggestion suggestion = (Suggestion)item;
+			doSearch(suggestion.getText());
+		}
 	}
 
 	/**

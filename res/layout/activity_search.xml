@@ -31,7 +31,7 @@
         	android:text="@string/str_go" 
         	android:layout_height="wrap_content" 
         	android:layout_width="wrap_content"
-        	android:onClick="doSearch">
+        	android:onClick="onSearchClick">
         </Button>
     </LinearLayout>
     <TextView 
