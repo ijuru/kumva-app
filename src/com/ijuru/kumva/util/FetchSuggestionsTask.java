@@ -83,5 +83,4 @@ public class FetchSuggestionsTask extends FetchTask<List<Suggestion>> {
 			return null;
 		}
 	}
-
 }

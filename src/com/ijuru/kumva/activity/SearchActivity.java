@@ -45,6 +45,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,7 +63,7 @@ import android.widget.TextView;
  * Main activity for searching a dictionary
  */
 public class SearchActivity extends Activity 
-		implements AdapterView.OnItemClickListener, Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
+		implements AdapterView.OnItemClickListener, TextWatcher, Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
 	
 	private DefinitionListAdapter definitionAdapter;
 	private SuggestionListAdapter suggestionAdapter;
@@ -69,6 +71,7 @@ public class SearchActivity extends Activity
 	private String suggestionsTerm;
 	private FetchSuggestionsTask suggestionsTask;
 	private Search search;
+	private boolean ignoreTextChange = false;
 	
     /**
      * Called when the activity is first created
@@ -83,23 +86,7 @@ public class SearchActivity extends Activity
         this.definitionAdapter = new DefinitionListAdapter(this);
         this.suggestionAdapter = new SuggestionListAdapter(this);
         
-        final int minSuggLen = getResources().getInteger(R.integer.min_autocomplete_query_chars);
-        
-        txtQuery.setOnKeyListener(new View.OnKeyListener() {
-			@Override
-			public boolean onKey(View view, int keyCode, KeyEvent event) {
-				// Only intercept printable characters
-				if (event.getUnicodeChar() > 0) {
-					String text = ((TextView)view).getText().toString();
-					if (text.length() >= minSuggLen && !text.equals(suggestionsTerm)) {
-						suggestionsTerm = text;
-						doSuggestions(text);
-					}
-				}
-				return false;
-			}
-		});
-        
+        txtQuery.addTextChangedListener(this);
         txtQuery.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
@@ -160,6 +147,8 @@ public class SearchActivity extends Activity
      * @param view the view
      */
     private void doSearch(String query) {
+    	//Log.i("Kumva", "Performing search for: " + query);
+    	
     	// Cancel any existing suggestion fetch
 		if (suggestionsTask != null)
 			suggestionsTask.cancel(true);
@@ -173,7 +162,10 @@ public class SearchActivity extends Activity
     	
     	// Set query field and move cursor to end
     	EditText txtQuery = (EditText)findViewById(R.id.queryfield);
+    	// Use flag to ensure this doesn't trigger a suggestion fetch
+    	ignoreTextChange = true;
     	txtQuery.setText(query);
+    	ignoreTextChange = false;
     	txtQuery.setSelection(query.length());
     	
     	// Hide on-screen keyboard
@@ -243,6 +235,8 @@ public class SearchActivity extends Activity
      * @param query the partial query
      */
     private void doSuggestions(String query) {
+    	//Log.i("Kumva", "Fetching suggestions for: " + query);
+    	
     	// Switch to suggestion list view
     	ListView listResults = (ListView)findViewById(R.id.listresults);
     	listResults.setAdapter(suggestionAdapter);
@@ -281,6 +275,22 @@ public class SearchActivity extends Activity
 	public void onFetchError(FetchTask<List<Suggestion>> task) {
 		// Awww
 	}
+	
+	@Override
+	public void onTextChanged(CharSequence text, int start, int before, int after) {
+		final int minSuggLen = getResources().getInteger(R.integer.min_autocomplete_query_chars);
+		
+		if (!ignoreTextChange && text.length() >= minSuggLen && !text.equals(suggestionsTerm)) {
+			suggestionsTerm = text.toString();
+			doSuggestions(suggestionsTerm);
+		}
+	}
+	
+	@Override
+	public void beforeTextChanged(CharSequence text, int start, int count, int after) {}
+	
+	@Override
+	public void afterTextChanged(Editable text) { }
 	
 	/**
      * Sets the status message under the query field, or hides it
