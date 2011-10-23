@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A word definition
+ * A dictionary entry
  */
-public class Definition {
+public class Entry {
 	private String wordClass;
 	private List<Integer> nounClasses = new ArrayList<Integer>();
 	private String prefix;

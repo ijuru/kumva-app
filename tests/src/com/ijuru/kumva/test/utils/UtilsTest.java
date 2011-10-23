@@ -68,21 +68,6 @@ public class UtilsTest extends AndroidTestCase {
 		assertEquals("Kinyarwanda", Utils.getLanguageName("rw"));
 	}
 	
-	public void test_parseCSVIntegers() {
-		List<Integer> ints0 = Utils.parseCSVIntegers("");
-		assertEquals(0, ints0.size());
-		
-		List<Integer> ints1 = Utils.parseCSVIntegers("123");
-		assertEquals(new Integer(123), ints1.get(0));
-		assertEquals(1, ints1.size());
-		
-		List<Integer> ints2 = Utils.parseCSVIntegers("1, -2,x,3");
-		assertEquals(new Integer(1), ints2.get(0));
-		assertEquals(new Integer(-2), ints2.get(1));
-		assertEquals(new Integer(3), ints2.get(2));
-		assertEquals(3, ints2.size());
-	}
-	
 	public void test_makeCSV() {
 		List<Integer> arr0 = new ArrayList<Integer>();
 		assertEquals("", Utils.makeCSV(arr0));
@@ -96,5 +81,35 @@ public class UtilsTest extends AndroidTestCase {
 		arr2.add(new Integer(-2));
 		arr2.add(new Integer(3));
 		assertEquals("1, -2, 3", Utils.makeCSV(arr2));
+	}
+	
+	public void test_parseCSV() {
+		List<String> strs0 = Utils.parseCSV("");
+		assertEquals(0, strs0.size());
+		
+		List<String> strs1 = Utils.parseCSV("abc");
+		assertEquals("abc", strs1.get(0));
+		assertEquals(1, strs1.size());
+		
+		List<String> strs2 = Utils.parseCSV("abc, 2,x");
+		assertEquals("abc", strs2.get(0));
+		assertEquals("2", strs2.get(1));
+		assertEquals("x", strs2.get(2));
+		assertEquals(3, strs2.size());
+	}
+	
+	public void test_parseCSVIntegers() {
+		List<Integer> ints0 = Utils.parseCSVIntegers("");
+		assertEquals(0, ints0.size());
+		
+		List<Integer> ints1 = Utils.parseCSVIntegers("123");
+		assertEquals(new Integer(123), ints1.get(0));
+		assertEquals(1, ints1.size());
+		
+		List<Integer> ints2 = Utils.parseCSVIntegers("1, -2,x,3");
+		assertEquals(new Integer(1), ints2.get(0));
+		assertEquals(new Integer(-2), ints2.get(1));
+		assertEquals(new Integer(3), ints2.get(2));
+		assertEquals(3, ints2.size());
 	}
 }

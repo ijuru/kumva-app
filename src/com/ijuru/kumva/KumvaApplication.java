@@ -22,7 +22,8 @@ package com.ijuru.kumva;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ijuru.kumva.util.Dialogs;
+import com.ijuru.kumva.site.Dictionary;
+import com.ijuru.kumva.ui.Dialogs;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -37,7 +38,7 @@ public class KumvaApplication extends Application {
 	
 	private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
 	private Dictionary activeDictionary = null;
-	private Definition definition;
+	private Entry currentEntry;
 	private MediaPlayer player;
 	
 	private final String PREF_FILE_DICTS = "dictionaries";
@@ -187,19 +188,19 @@ public class KumvaApplication extends Application {
 	}
 
 	/**
-	 * Gets the currently viewed definition
-	 * @return the definition
+	 * Gets the currently viewed entry
+	 * @return the entry
 	 */
-	public Definition getCurrentDefinition() {
-		return definition;
+	public Entry getCurrentEntry() {
+		return currentEntry;
 	}
 
 	/**
-	 * Sets the currently viewed definition
-	 * @param definition the definition to set
+	 * Sets the currently viewed entry
+	 * @param entry the entry
 	 */
-	public void setCurrentDefinition(Definition definition) {
-		this.definition = definition;
+	public void setCurrentEntry(Entry entry) {
+		this.currentEntry = entry;
 	}
 	
 	/**

@@ -26,7 +26,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
 import com.ijuru.kumva.Tag;
@@ -39,20 +39,20 @@ public class QueryXMLHandler extends DefaultHandler {
 	private String query;
 	private String suggestion;
 	
-	private Definition curDefinition;
+	private Entry curDefinition;
 	private Meaning curMeaning;
 	private Example curExample;
 	private String curRelationship;
 	private List<Tag> curTags;
 	private boolean inMeanings = false;
 	private StringBuilder elementText = null;
-	private List<DefinitionListener> listeners = new ArrayList<DefinitionListener>();
+	private List<EntryListener> listeners = new ArrayList<EntryListener>();
 
 	/**
 	 * Adds the definition listener
 	 * @param listener the listener
 	 */
-	public void addListener(DefinitionListener listener) {
+	public void addListener(EntryListener listener) {
 		listeners.add(listener);
 	}
 
@@ -64,15 +64,16 @@ public class QueryXMLHandler extends DefaultHandler {
 			suggestion = attributes.getValue("suggestion");
 		}
 		else if (localName.equals("entry")) {
-			curDefinition = new Definition();
+			curDefinition = new Entry();
 		} else if (localName.equals("revision")) {
 			curDefinition.setWordClass(attributes.getValue("wordclass"));
 			curDefinition.setNounClasses(Utils.parseCSVIntegers(attributes.getValue("nounclasses")));
 		} else if (localName.equals("meanings"))
 			inMeanings = true;
 		else if (localName.equals("meaning")) {
+			int flags = Meaning.parseFlags(attributes.getValue("flags"));
 			curMeaning = new Meaning();
-			// curMeaning.setFlags();
+			curMeaning.setFlags(flags);
 		} else if (localName.equals("relationship")) {
 			curRelationship = attributes.getValue("name");
 			curTags = new ArrayList<Tag>();
@@ -146,7 +147,7 @@ public class QueryXMLHandler extends DefaultHandler {
 	 */
 	private void definitionFinished() {
 		// Notify listeners
-		for (DefinitionListener listener : listeners)
+		for (EntryListener listener : listeners)
 			listener.found(curDefinition);
 	}
 

@@ -21,19 +21,19 @@ package com.ijuru.kumva.activity;
 
 import java.util.List;
 
-import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.Dictionary;
+import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
-import com.ijuru.kumva.Suggestion;
 import com.ijuru.kumva.search.Search;
 import com.ijuru.kumva.search.SearchResult;
-import com.ijuru.kumva.ui.DefinitionListAdapter;
+import com.ijuru.kumva.site.Dictionary;
+import com.ijuru.kumva.site.FetchSuggestionsTask;
+import com.ijuru.kumva.site.FetchTask;
+import com.ijuru.kumva.site.Suggestion;
+import com.ijuru.kumva.site.FetchTask.FetchListener;
+import com.ijuru.kumva.ui.EntryListAdapter;
+import com.ijuru.kumva.ui.Dialogs;
 import com.ijuru.kumva.ui.SuggestionListAdapter;
-import com.ijuru.kumva.util.Dialogs;
-import com.ijuru.kumva.util.FetchSuggestionsTask;
-import com.ijuru.kumva.util.FetchTask;
-import com.ijuru.kumva.util.FetchTask.FetchListener;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
@@ -65,7 +65,7 @@ import android.widget.TextView;
 public class SearchActivity extends Activity 
 		implements AdapterView.OnItemClickListener, TextWatcher, Search.SearchListener, OnCancelListener, FetchListener<List<Suggestion>> {
 	
-	private DefinitionListAdapter definitionAdapter;
+	private EntryListAdapter definitionAdapter;
 	private SuggestionListAdapter suggestionAdapter;
 	private ProgressDialog progressDialog;
 	private String suggestionsTerm;
@@ -83,7 +83,7 @@ public class SearchActivity extends Activity
         
         EditText txtQuery = (EditText)findViewById(R.id.queryfield);
         
-        this.definitionAdapter = new DefinitionListAdapter(this);
+        this.definitionAdapter = new EntryListAdapter(this);
         this.suggestionAdapter = new SuggestionListAdapter(this);
         
         txtQuery.addTextChangedListener(this);
@@ -209,7 +209,7 @@ public class SearchActivity extends Activity
 			setStatusMessage(getString(R.string.str_noresults));
 		}
 		else {
-			for (Definition definition : result.getMatches())
+			for (Entry definition : result.getMatches())
 				definitionAdapter.add(definition);
 			
 			if (!Utils.isEmpty(result.getSuggestion())) {
@@ -325,9 +325,9 @@ public class SearchActivity extends Activity
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Object item = parent.getItemAtPosition(position);
-		if (item instanceof Definition) {
-			Definition definition = (Definition)item;
-			((KumvaApplication)getApplication()).setCurrentDefinition(definition);
+		if (item instanceof Entry) {
+			Entry definition = (Entry)item;
+			((KumvaApplication)getApplication()).setCurrentEntry(definition);
 			
 			Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
 			startActivity(intent);

@@ -23,9 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import com.ijuru.kumva.R;
-import com.ijuru.kumva.util.Dialogs;
-import com.ijuru.kumva.util.FetchTask;
-import com.ijuru.kumva.util.FetchToFileTask;
+import com.ijuru.kumva.site.FetchTask;
+import com.ijuru.kumva.site.FetchToFileTask;
 import com.ijuru.kumva.util.Utils;
 
 import android.content.Context;
@@ -109,7 +108,7 @@ public class AudioButton extends Button implements
 	}
 	
 	/**
-	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
+	 * @see com.ijuru.kumva.site.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
 	 */
 	@Override
 	public void onFetchCompleted(FetchTask<Boolean> task, Boolean result) {

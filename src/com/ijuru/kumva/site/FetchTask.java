@@ -17,7 +17,7 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.util;
+package com.ijuru.kumva.site;
 
 import android.os.AsyncTask;
 

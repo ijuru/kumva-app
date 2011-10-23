@@ -19,7 +19,7 @@
 
 package com.ijuru.kumva.ui;
 
-import com.ijuru.kumva.Dictionary;
+import com.ijuru.kumva.site.Dictionary;
 
 import android.content.Context;
 import android.view.LayoutInflater;

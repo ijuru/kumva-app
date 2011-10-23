@@ -19,15 +19,15 @@
 
 package com.ijuru.kumva.xml;
 
-import com.ijuru.kumva.Definition;
+import com.ijuru.kumva.Entry;
 
 /**
  * Listener class for definition XML parsing
  */
-public interface DefinitionListener {
+public interface EntryListener {
 	/**
 	 * Parser has completed the parsing of a definition
 	 * @param definition the definition
 	 */
-	public void found(Definition definition);
+	public void found(Entry definition);
 }

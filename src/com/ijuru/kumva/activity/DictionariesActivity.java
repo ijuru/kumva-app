@@ -21,13 +21,13 @@ package com.ijuru.kumva.activity;
 
 import java.util.Comparator;
 
-import com.ijuru.kumva.Dictionary;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.site.Dictionary;
+import com.ijuru.kumva.site.FetchDictionaryTask;
+import com.ijuru.kumva.site.FetchTask;
+import com.ijuru.kumva.ui.Dialogs;
 import com.ijuru.kumva.ui.DictionaryListAdapter;
-import com.ijuru.kumva.util.Dialogs;
-import com.ijuru.kumva.util.FetchDictionaryTask;
-import com.ijuru.kumva.util.FetchTask;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -232,7 +232,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	}
 
 	/**
-	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
+	 * @see com.ijuru.kumva.site.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
 	 */
 	@Override
 	public void onFetchCompleted(FetchTask<Dictionary> task, Dictionary dictionary) {
@@ -249,7 +249,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	}
 	
 	/**
-	 * @see com.ijuru.kumva.util.FetchTask.FetchListener#onFetchError(FetchTask)
+	 * @see com.ijuru.kumva.site.FetchTask.FetchListener#onFetchError(FetchTask)
 	 */
 	@Override
 	public void onFetchError(FetchTask<Dictionary> task) {

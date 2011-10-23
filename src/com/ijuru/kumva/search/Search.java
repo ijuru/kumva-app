@@ -19,7 +19,7 @@
 
 package com.ijuru.kumva.search;
 
-import com.ijuru.kumva.Dictionary;
+import com.ijuru.kumva.site.Dictionary;
 
 import android.os.AsyncTask;
 

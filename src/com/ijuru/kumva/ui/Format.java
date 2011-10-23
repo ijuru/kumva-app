@@ -17,7 +17,7 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.util;
+package com.ijuru.kumva.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import android.text.Spanned;
 import com.ijuru.kumva.Example;
 import com.ijuru.kumva.Meaning;
 import com.ijuru.kumva.Tag;
-import com.ijuru.kumva.ui.QueryLinkSpan;
+import com.ijuru.kumva.util.Utils;
 
 /**
  * Utility class for string/spannable formatting methods
@@ -111,13 +111,34 @@ public class Format {
 	 * Formats a definition's meanings into a single string
 	 * @param context the context
 	 * @param meanings the meanings
+	 * @param showFlags true if meaning flags should be displayed
 	 * @return the formatted string
 	 */
-	public static Spannable meanings(Context context, List<Meaning> meanings) {
+	public static Spannable meanings(Context context, List<Meaning> meanings, boolean showFlags) {
 		// Convert meanings to spannables with parsed references
 		List<Spannable> parsedMeanings = new ArrayList<Spannable>();
 		for (Meaning meaning : meanings)
 			parsedMeanings.add(parseQueryLinks(context, meaning.getText()));
+				
+		// Append flags to meanings
+		if (showFlags) {
+			List<Spannable> flaggedMeanings = new ArrayList<Spannable>();
+			for (int m = 0; m < parsedMeanings.size(); ++m) {
+				Meaning meaning = meanings.get(m);
+				int flags = meaning.getFlags();
+				if (flags > 0) {
+					SpannableStringBuilder flaggedMeaning = new SpannableStringBuilder(parsedMeanings.get(m));
+					flaggedMeaning.append(" (");
+					flaggedMeaning.append(Meaning.makeFlagsCSV(flags));
+					flaggedMeaning.append(")");
+					flaggedMeanings.add(flaggedMeaning);
+				}
+				else
+					flaggedMeanings.add(parsedMeanings.get(m));
+			}
+			
+			parsedMeanings = flaggedMeanings;
+		}
 		
 		// If there is only one meaning then just return it
 		if (parsedMeanings.size() == 1)

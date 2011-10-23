@@ -17,42 +17,29 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.search;
+package com.ijuru.kumva.test;
 
-import java.util.List;
+import com.ijuru.kumva.Meaning;
 
-import com.ijuru.kumva.Entry;
+import android.test.AndroidTestCase;
 
 /**
- * The result of a search
+ * Test case for Meaning class
  */
-public class SearchResult {
-	private String suggestion;
-	private List<Entry> matches;
+public class MeaningTest extends AndroidTestCase {
+	public void test_parseFlags() {
+		int flags0 = Meaning.parseFlags("");
+		assertEquals(0, flags0);
+		int flags1 = Meaning.parseFlags("rare");
+		assertEquals(Meaning.FLAG_RARE, flags1);
+		int flags2 = Meaning.parseFlags("rare, old");
+		assertEquals(Meaning.FLAG_OLD|Meaning.FLAG_RARE, flags2);
+	}
 	
-	/**
-	 * Constructs a search result
-	 * @param suggestion the suggestion
-	 * @param matches the matching definitions
-	 */
-	public SearchResult(String suggestion, List<Entry> matches) {
-		this.suggestion = suggestion;
-		this.matches = matches;
-	}
-
-	/**
-	 * Gets the suggestion or null
-	 * @return the suggestion
-	 */
-	public String getSuggestion() {
-		return suggestion;
-	}
-
-	/**
-	 * Gets the matched definitions
-	 * @return the definitions
-	 */
-	public List<Entry> getMatches() {
-		return matches;
+	public void test_makeFlagsCSV() {
+		String str0 = Meaning.makeFlagsCSV(0);
+		assertEquals("", str0);	
+		String str1 = Meaning.makeFlagsCSV(Meaning.FLAG_OLD|Meaning.FLAG_RARE);
+		assertEquals("old, rare", str1);
 	}
 }

@@ -19,12 +19,24 @@
 
 package com.ijuru.kumva;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ijuru.kumva.util.Utils;
+
 /**
  * A meaning of an entry - can be a word or a more complex explanation
  */
 public class Meaning {
 	private String text;
 	private int flags;
+	
+	public static final int FLAG_OLD = 0x01;
+	public static final int FLAG_RARE = 0x02;
+	public static final int FLAG_SLANG = 0x04;
+	public static final int FLAG_RUDE = 0x08;
+	
+	private static final String[] flagNames = {"old", "rare", "slang", "rude" };
 	
 	/**
 	 * Default constructor
@@ -64,5 +76,51 @@ public class Meaning {
 	 */
 	public int getFlags() {
 		return flags;
+	}
+	
+	/**
+	 * Sets the flags
+	 * @param flags the flags
+	 */
+	public void setFlags(int flags) {
+		this.flags = flags;
+	}
+	
+	/**
+	 * Parses a CSV list of flag names into a bit field
+	 * @param str the CSV string
+	 * @return the bit field
+	 */
+	public static int parseFlags(String str) {
+		List<String> flagStrs = Utils.parseCSV(str);
+		if (flagStrs.size() == 0)
+			return 0;
+		
+		// Build bit field
+		int flags = 0;
+		for (int f = 0; f < flagNames.length; f++) {
+			String flagName = flagNames[f];
+			if (flagStrs.contains(flagName)) {
+				flags |= (1 << f);
+			}
+		}
+		
+		return flags;
+	}
+	
+	/**
+	 * Converts a bit field into a CSV string of flag names
+	 * @param flags the bit field
+	 * @return the CSV string
+	 */
+	public static String makeFlagsCSV(int flags) {
+		List<String> flagStrs = new ArrayList<String>();
+		
+		for (int f = 0; f < flagNames.length; f++) {
+			if ((flags & (1 << f)) > 0)
+				flagStrs.add(flagNames[f]);
+		}
+		
+		return Utils.makeCSV(flagStrs);
 	}
 }

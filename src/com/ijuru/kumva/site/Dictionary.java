@@ -17,7 +17,7 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva;
+package com.ijuru.kumva.site;
 
 import java.net.MalformedURLException;
 import java.net.URL;

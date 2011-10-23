@@ -17,7 +17,7 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.util;
+package com.ijuru.kumva.site;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,8 +29,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.ijuru.kumva.Dictionary;
-import com.ijuru.kumva.Suggestion;
 
 /**
  * Task to fetch suggestions for a search term

@@ -17,7 +17,7 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.util;
+package com.ijuru.kumva.site;
 
 import java.net.URL;
 
@@ -28,7 +28,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.ijuru.kumva.Dictionary;
 
 /**
  * Task to fetch a dictionary's info from the a URL

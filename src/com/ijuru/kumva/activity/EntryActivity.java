@@ -19,12 +19,12 @@
 
 package com.ijuru.kumva.activity;
 
-import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.Dictionary;
+import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.KumvaApplication;
 import com.ijuru.kumva.R;
+import com.ijuru.kumva.site.Dictionary;
 import com.ijuru.kumva.ui.AudioButton;
-import com.ijuru.kumva.util.Format;
+import com.ijuru.kumva.ui.Format;
 import com.ijuru.kumva.util.Utils;
 
 import android.app.Activity;
@@ -38,7 +38,7 @@ import android.widget.TextView;
  */
 public class EntryActivity extends Activity {
 	
-	private Definition definition;
+	private Entry entry;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -57,10 +57,10 @@ public class EntryActivity extends Activity {
 		((TextView)findViewById(R.id.headerDerivation)).setText(R.string.str_derivation);
 		((TextView)findViewById(R.id.headerExamples)).setText(R.string.str_examples);
 		
-		this.definition = app.getCurrentDefinition();
+		this.entry = app.getCurrentEntry();
 
-		setItemTextOrHide(R.id.prefix, definition.getPrefix());
-		setItemTextOrHide(R.id.lemma, definition.getLemma());
+		setItemTextOrHide(R.id.prefix, entry.getPrefix());
+		setItemTextOrHide(R.id.lemma, entry.getLemma());
 		
 		TextView modifier = (TextView)findViewById(R.id.modifier);
 		TextView pronunciation = (TextView)findViewById(R.id.pronunciation);
@@ -68,35 +68,35 @@ public class EntryActivity extends Activity {
 		TextView wordclass = (TextView)findViewById(R.id.wordclass);
 		
 		// Display modifier in brackets
-		if (!Utils.isEmpty(definition.getModifier()))
-			modifier.setText("(" + definition.getModifier() + ")");
+		if (!Utils.isEmpty(entry.getModifier()))
+			modifier.setText("(" + entry.getModifier() + ")");
 		
 		// Display pronunciation/amasaku
-		if (!Utils.isEmpty(definition.getPronunciation()))
-			pronunciation.setText("/" + definition.getPronunciation() + "/");
+		if (!Utils.isEmpty(entry.getPronunciation()))
+			pronunciation.setText("/" + entry.getPronunciation() + "/");
 		else
 			pronunciation.setVisibility(View.GONE);
 		
 		// Display audio button if there is a URL
-		if (!Utils.isEmpty(definition.getAudioURL())) {
+		if (!Utils.isEmpty(entry.getAudioURL())) {
 			audioBtn.setMediaPlayer(app.getMediaPlayer());
-			audioBtn.setAudioURL(definition.getAudioURL());
+			audioBtn.setAudioURL(entry.getAudioURL());
 		}
 		else
 			audioBtn.setVisibility(View.GONE);
 		
 		// Display word class and noun classes
-		if (!Utils.isEmpty(definition.getWordClass())) {
-			String strIdName = "wcls_" + definition.getWordClass();
+		if (!Utils.isEmpty(entry.getWordClass())) {
+			String strIdName = "wcls_" + entry.getWordClass();
 			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva");
 			StringBuilder sb = new StringBuilder(getString(strId));
 			
 			// Create noun classes string
-			if (definition.getNounClasses().size() > 0) {
+			if (entry.getNounClasses().size() > 0) {
 				sb.append(" (");
-				sb.append(getString(definition.getNounClasses().size() > 1 ? R.string.str_classes : R.string.str_class).toLowerCase());
+				sb.append(getString(entry.getNounClasses().size() > 1 ? R.string.str_classes : R.string.str_class).toLowerCase());
 				sb.append(" ");
-				sb.append(Utils.makeCSV(definition.getNounClasses()));
+				sb.append(Utils.makeCSV(entry.getNounClasses()));
 				sb.append(")");
 			}
 			
@@ -105,10 +105,10 @@ public class EntryActivity extends Activity {
 		else
 			wordclass.setVisibility(View.GONE);
 		
-		setItemTextOrHide(R.id.meaning, Format.meanings(this, definition.getMeanings()));
-		setItemTextOrHide(R.id.comment, Format.parseQueryLinks(this, definition.getComment()));	
-		setItemTextOrHide(R.id.derivation, Format.rootList(this, dictionary.getDefinitionLang(), definition.getTags("root")));
-		setItemTextOrHide(R.id.examples, Format.examples(definition.getExamples()));
+		setItemTextOrHide(R.id.meaning, Format.meanings(this, entry.getMeanings(), true));
+		setItemTextOrHide(R.id.comment, Format.parseQueryLinks(this, entry.getComment()));	
+		setItemTextOrHide(R.id.derivation, Format.rootList(this, dictionary.getDefinitionLang(), entry.getTags("root")));
+		setItemTextOrHide(R.id.examples, Format.examples(entry.getExamples()));
 	}
 
 	/**

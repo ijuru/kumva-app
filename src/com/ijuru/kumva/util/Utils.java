@@ -102,6 +102,40 @@ public class Utils {
 	}
 	
 	/**
+	 * Makes a CSV string from a collection of objects
+	 * @param vals the objects
+	 * @return the CSV string
+	 */
+	public static String makeCSV(Collection<?> vals) {
+		StringBuilder builder = new StringBuilder();
+		Iterator<?> iter = vals.iterator();
+		while (iter.hasNext()) {
+			builder.append(iter.next().toString());
+		    if (!iter.hasNext()) {
+		       break;                  
+		    }
+		    builder.append(", ");
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * Parses a CSV string into a list of strings, removing spaces and empty strings
+	 * @param csv the string
+	 * @return the list of strings
+	 */
+	public static List<String> parseCSV(String csv) {
+		String[] vals = csv.split(",");
+		List<String> strs = new ArrayList<String>();
+		for (String val : vals) {
+			String v = val.trim();
+			if (v.length() > 0)
+				strs.add(v);
+		}
+		return strs;
+	}
+	
+	/**
 	 * Parses a CSV string into a list of integers
 	 * @param csv the string
 	 * @return the list of integers
@@ -119,22 +153,4 @@ public class Utils {
 		}
 		return ints;
 	}
-	
-	/**
-	 * Makes a CSV string from a collection of objects
-	 * @param vals the objects
-	 * @return the CSV string
-	 */
-	public static String makeCSV(Collection<?> vals) {
-	     StringBuilder builder = new StringBuilder();
-	     Iterator<?> iter = vals.iterator();
-	     while (iter.hasNext()) {
-	         builder.append(iter.next().toString());
-	         if (!iter.hasNext()) {
-	           break;                  
-	         }
-	         builder.append(", ");
-	     }
-	     return builder.toString();
-	 }
 }

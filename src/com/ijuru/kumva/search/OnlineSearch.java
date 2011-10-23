@@ -31,18 +31,18 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
-import com.ijuru.kumva.Definition;
-import com.ijuru.kumva.Dictionary;
-import com.ijuru.kumva.xml.DefinitionListener;
+import com.ijuru.kumva.Entry;
+import com.ijuru.kumva.site.Dictionary;
+import com.ijuru.kumva.xml.EntryListener;
 import com.ijuru.kumva.xml.QueryXMLHandler;
 
 /**
  * An online search which using the Kumva XML API
  */
-public class OnlineSearch extends Search implements DefinitionListener {
+public class OnlineSearch extends Search implements EntryListener {
 	
 	private int timeout;
-	private List<Definition> results = new ArrayList<Definition>();
+	private List<Entry> results = new ArrayList<Entry>();
 	
 	/**
 	 * Constructs an online search from the given dictionary
@@ -107,10 +107,10 @@ public class OnlineSearch extends Search implements DefinitionListener {
 	}
 
 	/**
-	 * @see com.ijuru.kumva.xml.DefinitionListener#found(Definition)
+	 * @see com.ijuru.kumva.xml.EntryListener#found(Entry)
 	 */
 	@Override
-	public void found(Definition definition) {
+	public void found(Entry definition) {
 		results.add(definition);
 	}
 }

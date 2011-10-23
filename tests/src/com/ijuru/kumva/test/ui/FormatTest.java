@@ -17,10 +17,10 @@
  * along with Kumva. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ijuru.kumva.test.utils;
+package com.ijuru.kumva.test.ui;
 
+import com.ijuru.kumva.ui.Format;
 import com.ijuru.kumva.ui.QueryLinkSpan;
-import com.ijuru.kumva.util.Format;
 
 import android.test.AndroidTestCase;
 import android.text.Spannable;
