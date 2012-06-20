@@ -92,6 +92,9 @@ public class Meaning {
 	 * @return the bit field
 	 */
 	public static int parseFlags(String str) {
+		if (Utils.isEmpty(str))
+			return 0;
+		
 		List<String> flagStrs = Utils.parseCSV(str);
 		if (flagStrs.size() == 0)
 			return 0;

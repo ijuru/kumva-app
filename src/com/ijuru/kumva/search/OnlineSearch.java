@@ -31,6 +31,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
+import android.util.Log;
+
 import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.site.Dictionary;
 import com.ijuru.kumva.xml.EntryListener;
@@ -102,6 +104,7 @@ public class OnlineSearch extends Search implements EntryListener {
 			return new SearchResult(handler.getSuggestion(), results);	
 			
 		} catch (Exception e) {
+			Log.e("Kumva", e.getMessage(), e);
 			return null;
 		}
 	}
