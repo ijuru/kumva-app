@@ -31,7 +31,7 @@ import android.test.AndroidTestCase;
  */
 public class UtilsTest extends AndroidTestCase {
 	public void test_getVersionName() {
-		assertEquals("1.5", Utils.getVersionName(getContext()));
+		assertEquals("1.5.2", Utils.getVersionName(getContext()));
 	}
 	
 	public void test_isEmpty() {
