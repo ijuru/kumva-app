@@ -28,6 +28,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,8 +68,10 @@ public class SearchActivity extends ActionBarActivity implements
 	private String suggestionsTerm;
 	private FetchSuggestionsTask suggestionsTask;
 	private Search search;
-	private boolean ignoreTextChange = false;
 
+	/**
+	 * @see android.support.v7.app.ActionBarActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,13 +87,14 @@ public class SearchActivity extends ActionBarActivity implements
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			String initQuery = (String) extras.get("query");
-			if (initQuery != null)
+			if (initQuery != null) {
 				doSearch(initQuery);
+			}
 		}
 	}
 
 	/**
-	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 * @see android.support.v7.app.ActionBarActivity#onCreateOptionsMenu(android.view.Menu)
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,11 +106,11 @@ public class SearchActivity extends ActionBarActivity implements
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	/**
+	 * @see android.support.v7.app.ActionBarActivity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 			case R.id.menudictionaries:
 				startActivity(new Intent(getApplicationContext(), DictionariesActivity.class));
@@ -121,6 +125,9 @@ public class SearchActivity extends ActionBarActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * @see android.support.v7.app.ActionBarActivity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -133,37 +140,42 @@ public class SearchActivity extends ActionBarActivity implements
 	 * Updates controls which depend on the active dictionary
 	 */
 	private void updateControls() {
-		KumvaApplication app = (KumvaApplication)getApplication();
+		// TODO
+
+		//KumvaApplication app = (KumvaApplication)getApplication();
 		//EditText txtQuery = (EditText)findViewById(R.id.queryfield);
 
 		//MenuItem searchItem = menu.findViewById(R.id.action_search);
 		//SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
 		// Create query field hint from active dictionary's languages
-		Dictionary dictionary = app.getActiveDictionary();
-		if (dictionary != null) {
-			String lang1 = Utils.getLanguageName(dictionary.getDefinitionLang());
-			String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
-			String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
+		//Dictionary dictionary = app.getActiveDictionary();
+		//if (dictionary != null) {
+			//String lang1 = Utils.getLanguageName(dictionary.getDefinitionLang());
+			//String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
+			//String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
 			//txtQuery.setHint(hint);
 			//txtQuery.setEnabled(true);
-		}
-		else {
+		//}
+		//else {
 			//txtQuery.setHint(R.string.str_nodictionary);
 			//txtQuery.setEnabled(false);
-		}
+		//}
 	}
 
 	/**
 	 * Performs a dictionary search
 	 * @param query the query
 	 */
-	protected void doSearch(String query) {
+	protected synchronized void doSearch(String query) {
 		//Log.i("Kumva", "Performing search for: " + query);
 
 		// Cancel any existing suggestion fetch
-		if (suggestionsTask != null)
+		if (suggestionsTask != null) {
 			suggestionsTask.cancel(true);
+		}
+
+		// TODO update search view query
 
 		// Switch to definition list view
 		ListView listResults = (ListView)findViewById(R.id.listresults);
@@ -212,7 +224,7 @@ public class SearchActivity extends ActionBarActivity implements
 			for (Entry definition : result.getMatches())
 				definitionAdapter.add(definition);
 
-			if (!Utils.isEmpty(result.getSuggestion())) {
+			if (!TextUtils.isEmpty(result.getSuggestion())) {
 				// Update status message to show user the search suggestion
 				String message = String.format(getString(R.string.str_bysuggestion), result.getSuggestion());
 				setStatusMessage(message);
@@ -234,7 +246,7 @@ public class SearchActivity extends ActionBarActivity implements
 	 * Performs a lookup of search suggestions
 	 * @param query the partial query
 	 */
-	private void doSuggestions(String query) {
+	protected void doSuggestions(String query) {
 		//Log.i("Kumva", "Fetching suggestions for: " + query);
 
 		// Switch to suggestion list view
@@ -246,8 +258,9 @@ public class SearchActivity extends ActionBarActivity implements
 
 		if (activeDictionary != null) {
 			// Cancel existing suggestion fetch
-			if (suggestionsTask != null)
+			if (suggestionsTask != null) {
 				suggestionsTask.cancel(true);
+			}
 
 			int timeout = getResources().getInteger(R.integer.connection_timeout);
 			suggestionsTask = new FetchSuggestionsTask(activeDictionary, timeout);
@@ -264,8 +277,9 @@ public class SearchActivity extends ActionBarActivity implements
 		suggestionAdapter.clear();
 
 		// Add suggestions to list
-		for (Suggestion suggestion : result)
+		for (Suggestion suggestion : result) {
 			suggestionAdapter.add(suggestion);
+		}
 	}
 
 	/**
@@ -276,17 +290,23 @@ public class SearchActivity extends ActionBarActivity implements
 		// Awww
 	}
 
+	/**
+	 * @see SearchView.OnQueryTextListener#onQueryTextSubmit(String)
+	 */
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		doSearch(query);
 		return true;
 	}
 
+	/**
+	 * @see SearchView.OnQueryTextListener#onQueryTextChange(String)
+	 */
 	@Override
 	public boolean onQueryTextChange(String query) {
 		final int minSuggLen = getResources().getInteger(R.integer.min_autocomplete_query_chars);
 
-		if (!ignoreTextChange && query.length() >= minSuggLen && !query.equals(suggestionsTerm)) {
+		if (query.length() >= minSuggLen && !query.equals(suggestionsTerm)) {
 			suggestionsTerm = query.toString();
 			doSuggestions(suggestionsTerm);
 		}
@@ -294,22 +314,7 @@ public class SearchActivity extends ActionBarActivity implements
 	}
 
 	/**
-	 * Sets the status message under the query field, or hides it
-	 * @param message the message or null to hide it
-	 */
-	private void setStatusMessage(String message) {
-		TextView txtStatus = (TextView)findViewById(R.id.statusmessage);
-
-		if (message == null)
-			txtStatus.setVisibility(View.GONE);
-		else {
-			txtStatus.setText(message);
-			txtStatus.setVisibility(View.VISIBLE);
-		}
-	}
-
-	/**
-	 * Called when a list item is selected (either a definition or suggestion)
+	 * @see AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -328,19 +333,38 @@ public class SearchActivity extends ActionBarActivity implements
 	}
 
 	/**
+	 * @see DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
+	 */
+	@Override
+	public void onCancel(DialogInterface dialog) {
+		search.cancel(true);
+	}
+
+	/**
+	 * Sets the status message under the query field, or hides it
+	 * @param message the message or null to hide it
+	 */
+	protected void setStatusMessage(String message) {
+		TextView txtStatus = (TextView)findViewById(R.id.statusmessage);
+
+		if (message == null) {
+			txtStatus.setVisibility(View.GONE);
+		}
+		else {
+			txtStatus.setText(message);
+			txtStatus.setVisibility(View.VISIBLE);
+		}
+	}
+
+	/**
 	 * Displays the about dialog
 	 */
 	private void onMenuAbout() {
 		String title = getString(R.string.app_name) + " " + Utils.getVersionName(this);
 		String message = "Thank you for downloading Kumva\n" +
 				"\n" +
-				"If you have any problems please contact rowan@ijuru.com";
+				"If you have any problems please try @kinyarwandanet";
 
 		Dialogs.alert(this, title, message);
-	}
-
-	@Override
-	public void onCancel(DialogInterface dialog) {
-		search.cancel(true);
 	}
 }

@@ -24,6 +24,7 @@ import com.ijuru.kumva.app.R;
 import com.ijuru.kumva.app.util.Utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,10 +70,12 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 			prefix.setText(definition.getPrefix());
 			lemma.setText(definition.getLemma());
 			
-			if (!Utils.isEmpty(definition.getModifier()))
+			if (!TextUtils.isEmpty(definition.getModifier())) {
 				modifier.setText("(" + definition.getModifier() + ")");
-			else
+			}
+			else {
 				modifier.setText("");
+			}
 			
 			meaning.setText(Format.meanings(getContext(), definition.getMeanings(), false));
 		}

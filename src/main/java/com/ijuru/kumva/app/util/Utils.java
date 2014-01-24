@@ -47,15 +47,6 @@ public class Utils {
 	}
 	
 	/**
-	 * Checks if the given string is NULL or empty
-	 * @param str the string to check
-	 * @return true if string is empty
-	 */
-	public static boolean isEmpty(CharSequence str) {
-		return str == null || str.length() == 0;
-	}
-	
-	/**
 	 * Capitalizes the given string
 	 * @param str the string
 	 * @return the capitalized string

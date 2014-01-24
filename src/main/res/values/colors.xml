@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="header_background">#9DB272</color>
-	<color name="header_text">#334422</color>
+	<color name="actionbar_background">#ff426a50</color>
+
 	<color name="status_text">#221100</color>
 	<color name="status_background">#D2CDA6</color>
-	<color name="results_background">#000000</color>
+
 	<color name="section_header_background">#444444</color>
 	<color name="section_header_text">#BBBBBB</color>
-	<color name="prefix">#BBBBFF</color>
-	<color name="lemma">#BBFFBB</color>
-	<color name="example">#D2CDA6</color>
+
+	<color name="prefix">#ff253169</color>
+	<color name="lemma">#ff28572b</color>
+	<color name="example">#ff3a320f</color>
 </resources>

@@ -10,9 +10,9 @@
 
 	<!-- ActionBar styles -->
 	<style name="KumvaActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-		<item name="android:background">@color/header_background</item>
+		<item name="android:background">@color/actionbar_background</item>
 
 		<!-- Support library compatibility -->
-		<item name="background">@color/header_background</item>
+		<item name="background">@color/actionbar_background</item>
 	</style>
 </resources>

@@ -19,6 +19,8 @@
 
 package com.ijuru.kumva.app;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,12 +94,14 @@ public class Meaning {
 	 * @return the bit field
 	 */
 	public static int parseFlags(String str) {
-		if (Utils.isEmpty(str))
+		if (TextUtils.isEmpty(str)) {
 			return 0;
+		}
 		
 		List<String> flagStrs = Utils.parseCSV(str);
-		if (flagStrs.size() == 0)
+		if (flagStrs.size() == 0) {
 			return 0;
+		}
 		
 		// Build bit field
 		int flags = 0;

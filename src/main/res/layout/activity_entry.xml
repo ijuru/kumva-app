@@ -1,143 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <TextView
-    	android:id="@+id/entrytitle" 
-    	android:layout_width="fill_parent" 
-    	android:layout_height="wrap_content"
-    	android:background="@color/header_background"
-    	android:text="@string/str_entrydetails"
-    	android:textColor="@color/header_text"
-    	android:textStyle="bold"
-    	android:textSize="20sp"
-    	android:padding="10dp">
-    </TextView>
-    <ScrollView
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content">
-    	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="vertical">
-		    <LinearLayout
-		    	android:layout_width="fill_parent"
-		    	android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		    	android:orientation="horizontal"
-		    	android:padding="10dp">
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+
+	<ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+					  android:layout_width="fill_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="vertical">
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:orientation="horizontal"
+				android:padding="10dp">
 				<TextView
-				    android:id="@+id/prefix"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				 	android:textStyle="bold"
-				    android:paddingRight="0dp"
-				    android:textSize="16sp"
-				    android:textColor="@color/prefix" >
+					android:id="@+id/prefix"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:paddingRight="0dp"
+					android:textSize="16sp"
+					android:textColor="@color/prefix" >
 				</TextView>
 				<TextView
-				    android:id="@+id/lemma"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				 	android:textStyle="bold"
-				    android:paddingRight="2dp"
-				    android:textSize="16sp"
-				    android:textColor="@color/lemma" >
+					android:id="@+id/lemma"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:paddingRight="2dp"
+					android:textSize="16sp"
+					android:textColor="@color/lemma" >
 				</TextView>
 				<TextView
-				    android:id="@+id/modifier"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				 	android:textStyle="bold"
-				    android:paddingLeft="2dp"
-				    android:textSize="16sp" >
+					android:id="@+id/modifier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:paddingLeft="2dp"
+					android:textSize="16sp" >
 				</TextView>
 			</LinearLayout>
+
 			<!-- =============== Pronunciation section ============== -->
+
 			<include layout="@layout/section_header" android:id="@+id/headerPronunciation" />
+
 			<LinearLayout
-		    	android:layout_width="fill_parent"
-		    	android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		    	android:orientation="horizontal"
-		    	android:padding="10dp">
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:orientation="horizontal"
+				android:padding="10dp">
 				<TextView
-				    android:id="@+id/pronunciation"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				    android:layout_weight="1"
-				    android:paddingRight="5dp"
-				    android:textSize="14sp" >
+					android:id="@+id/pronunciation"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:paddingRight="5dp"
+					android:textSize="14sp" >
 				</TextView>
 				<com.ijuru.kumva.app.ui.AudioButton
 					android:id="@+id/audiobtn"
-					android:text="@string/str_listen" 
-			        android:layout_height="wrap_content" 
-			        android:layout_width="wrap_content">
+					android:text="@string/str_listen"
+					android:layout_height="wrap_content"
+					android:layout_width="wrap_content">
 				</com.ijuru.kumva.app.ui.AudioButton>
 			</LinearLayout>
-			
+
 			<!-- =============== Meaning section =============== -->
-			
+
 			<include layout="@layout/section_header" android:id="@+id/headerMeaning" />
+
 			<LinearLayout
-		    	android:layout_width="fill_parent"
-		    	android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		    	android:orientation="vertical"
-		    	android:padding="10dp">
-		    	<TextView
-				    android:id="@+id/wordclass"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				    android:textStyle="italic"
-				    android:textSize="14sp" >
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:orientation="vertical"
+				android:padding="10dp">
+				<TextView
+					android:id="@+id/wordclass"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:textStyle="italic"
+					android:textSize="14sp" >
 				</TextView>
 				<TextView
-				    android:id="@+id/meaning"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				    android:paddingTop="10dp"
-				    android:textSize="14sp" >
+					android:id="@+id/meaning"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="10dp"
+					android:textSize="14sp" >
 				</TextView>
 				<TextView
-				    android:id="@+id/comment"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				    android:paddingTop="10dp"
-				    android:textSize="14sp" >
+					android:id="@+id/comment"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="10dp"
+					android:textSize="14sp" >
 				</TextView>
 			</LinearLayout>
-			
+
 			<!-- =============== Derivation section =============== -->
-			
+
 			<include layout="@layout/section_header" android:id="@+id/headerDerivation" />
+
 			<LinearLayout
-		    	android:layout_width="fill_parent"
-		    	android:layout_height="wrap_content"
-		    	android:layout_weight="1"
-		    	android:orientation="horizontal"
-		    	android:padding="10dp">
-		    	<TextView
-				    android:id="@+id/derivation"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				    android:textSize="14sp" >
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:orientation="horizontal"
+				android:padding="10dp">
+				<TextView
+					android:id="@+id/derivation"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:textSize="14sp" >
 				</TextView>
 			</LinearLayout>
-			
+
 			<!-- =============== Examples section =============== -->
 			<include layout="@layout/section_header" android:id="@+id/headerExamples" />
+
 			<TextView
-			    android:id="@+id/examples"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:padding="10dp"
-			    android:textColor="@color/example"
-			    android:textSize="14sp" >
+				android:id="@+id/examples"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:padding="10dp"
+				android:textColor="@color/example"
+				android:textSize="14sp" >
 			</TextView>
-			
+
 		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

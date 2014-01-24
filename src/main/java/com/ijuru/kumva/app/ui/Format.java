@@ -38,6 +38,7 @@ import com.ijuru.kumva.app.util.Utils;
  * Utility class for string/spannable formatting methods
  */
 public class Format {
+
 	/**
 	 * Creates a spannable of a single query
 	 * @param context the context
