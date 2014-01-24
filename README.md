@@ -1,5 +1,5 @@
-Kumvandroid
-===========
+Kumva Android App
+=================
 
 This in an Android app viewer for Kumva dictionaries. Currently only
 one such dictionary exists which is the Kinyarwanda-English dictionary

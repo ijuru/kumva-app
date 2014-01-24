@@ -88,7 +88,7 @@ public class EntryActivity extends Activity {
 		// Display word class and noun classes
 		if (!Utils.isEmpty(entry.getWordClass())) {
 			String strIdName = "wcls_" + entry.getWordClass();
-			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva");
+			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva.app");
 			StringBuilder sb = new StringBuilder(getString(strId));
 			
 			// Create noun classes string

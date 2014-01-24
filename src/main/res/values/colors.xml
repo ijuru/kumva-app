@@ -4,6 +4,7 @@
 	<color name="header_text">#334422</color>
 	<color name="status_text">#221100</color>
 	<color name="status_background">#D2CDA6</color>
+	<color name="results_background">#000000</color>
 	<color name="section_header_background">#444444</color>
 	<color name="section_header_text">#BBBBBB</color>
 	<color name="prefix">#BBBBFF</color>

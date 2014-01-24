@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Rowan Seymour
+ * Copyright 2014 Rowan Seymour
  * 
  * This file is part of Kumva.
  *

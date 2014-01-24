@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- the theme applied to the application or activity -->
+	<style name="KumvaActionBarTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+		<item name="android:actionBarStyle">@style/KumvaActionBarStyle</item>
+
+		<!-- Support library compatibility -->
+		<item name="actionBarStyle">@style/KumvaActionBarStyle</item>
+	</style>
+
+	<!-- ActionBar styles -->
+	<style name="KumvaActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+		<item name="android:background">@color/header_background</item>
+
+		<!-- Support library compatibility -->
+		<item name="background">@color/header_background</item>
+	</style>
+</resources>
