@@ -3,13 +3,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 apply plugin: 'android'
 
 repositories {
     mavenCentral()
+	mavenLocal()
 }
 
 android {
@@ -24,4 +25,5 @@ android {
 
 dependencies {
 	compile 'com.android.support:appcompat-v7:19.0.1'
+	compile 'com.ijuru:kumva:0.2-SNAPSHOT'
 }

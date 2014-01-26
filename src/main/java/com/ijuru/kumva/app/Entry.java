@@ -19,6 +19,10 @@
 
 package com.ijuru.kumva.app;
 
+import com.ijuru.kumva.Example;
+import com.ijuru.kumva.Meaning;
+import com.ijuru.kumva.Tag;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

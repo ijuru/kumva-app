@@ -29,9 +29,9 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
-import com.ijuru.kumva.app.Example;
-import com.ijuru.kumva.app.Meaning;
-import com.ijuru.kumva.app.Tag;
+import com.ijuru.kumva.Example;
+import com.ijuru.kumva.Meaning;
+import com.ijuru.kumva.Tag;
 import com.ijuru.kumva.app.util.Utils;
 
 /**

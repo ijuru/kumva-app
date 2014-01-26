@@ -22,7 +22,6 @@ package com.ijuru.kumva.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ijuru.kumva.app.R;
 import com.ijuru.kumva.app.site.Dictionary;
 import com.ijuru.kumva.app.ui.Dialogs;
 

@@ -26,10 +26,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.ijuru.kumva.Example;
+import com.ijuru.kumva.Meaning;
+import com.ijuru.kumva.Tag;
 import com.ijuru.kumva.app.Entry;
-import com.ijuru.kumva.app.Example;
-import com.ijuru.kumva.app.Meaning;
-import com.ijuru.kumva.app.Tag;
 import com.ijuru.kumva.app.util.Utils;
 
 /**
