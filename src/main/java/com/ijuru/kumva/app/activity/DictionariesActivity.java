@@ -23,11 +23,11 @@ import java.util.Comparator;
 
 import com.ijuru.kumva.app.KumvaApplication;
 import com.ijuru.kumva.app.R;
-import com.ijuru.kumva.app.site.Dictionary;
 import com.ijuru.kumva.app.site.FetchDictionaryTask;
 import com.ijuru.kumva.app.site.FetchTask;
 import com.ijuru.kumva.app.ui.Dialogs;
 import com.ijuru.kumva.app.ui.DictionaryListAdapter;
+import com.ijuru.kumva.remote.RemoteDictionary;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -46,12 +46,15 @@ import android.widget.ListView;
  * Activity to display dictionary list and allow users to add new dictionaries
  * and update or remove existing ones
  */
-public class DictionariesActivity extends ListActivity implements FetchTask.FetchListener<Dictionary>{
+public class DictionariesActivity extends ListActivity implements FetchTask.FetchListener<RemoteDictionary>{
 
 	private DictionaryListAdapter adapter;
-	private Dictionary editDictionary;
+
+	private RemoteDictionary editDictionary;
+
 	private final int MENU_UPDATE = 0;
 	private final int MENU_REMOVE = 1;
+
 	private ProgressDialog progressDialog;
 	
 	/**
@@ -71,7 +74,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
     	getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Dictionary dictionary = adapter.getItem(position);
+				RemoteDictionary dictionary = adapter.getItem(position);
 				app.setActiveDictionary(dictionary);
 			}
 		});
@@ -135,7 +138,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_UPDATE:
-			fetchDictionary(editDictionary.getURL());
+			fetchDictionary(editDictionary.getUrl());
 			break;
 		case MENU_REMOVE:
 			removeDictionary(editDictionary);
@@ -159,7 +162,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 					
 					// Check for a duplicate with the same URL
 					KumvaApplication app = (KumvaApplication)getApplication();
-					Dictionary existing = app.getDictionaryByURL(url);
+					RemoteDictionary existing = app.getDictionaryByUrl(url);
 					if (existing == null)
 						fetchDictionary(url);
 					else
@@ -184,7 +187,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	 * Adds the specified dictionary
 	 * @param dictionary the dictionary
 	 */
-	private void addDictionary(Dictionary dictionary) {
+	private void addDictionary(RemoteDictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
 		adapter.add(dictionary);
 		app.addDictionary(dictionary);
@@ -196,7 +199,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	 * Removes the specified dictionary
 	 * @param dictionary the dictionary
 	 */
-	private void removeDictionary(Dictionary dictionary) {
+	private void removeDictionary(RemoteDictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
 		app.removeDictionary(editDictionary);
 		adapter.remove(editDictionary);
@@ -214,12 +217,12 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
     	adapter.clear();
     	
     	// Add existing dictionaries
-    	for (Dictionary dict : app.getDictionaries())
+    	for (RemoteDictionary dict : app.getDictionaries())
     		adapter.add(dict);
     			
-    	adapter.sort(new Comparator<Dictionary>() {
+    	adapter.sort(new Comparator<RemoteDictionary>() {
 			@Override
-			public int compare(Dictionary d1, Dictionary d2) {
+			public int compare(RemoteDictionary d1, RemoteDictionary d2) {
 				return d1.getName().compareTo(d2.getName());
 		}});
 		
@@ -235,14 +238,14 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	 * @see com.ijuru.kumva.app.site.FetchTask.FetchListener#onFetchCompleted(FetchTask, Object)
 	 */
 	@Override
-	public void onFetchCompleted(FetchTask<Dictionary> task, Dictionary dictionary) {
+	public void onFetchCompleted(FetchTask<RemoteDictionary> task, RemoteDictionary dictionary) {
 		KumvaApplication app = (KumvaApplication)getApplication();
 		
 		// Hide the progress dialog
 		progressDialog.dismiss();
 		
 		// Look for dictionary with same URL which needs to be replaced
-		Dictionary existing = app.getDictionaryByURL(dictionary.getURL());
+		RemoteDictionary existing = app.getDictionaryByUrl(dictionary.getUrl());
 		removeDictionary(existing);
 			
 		addDictionary(dictionary);
@@ -252,7 +255,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 	 * @see com.ijuru.kumva.app.site.FetchTask.FetchListener#onFetchError(FetchTask)
 	 */
 	@Override
-	public void onFetchError(FetchTask<Dictionary> task) {
+	public void onFetchError(FetchTask<RemoteDictionary> task) {
 		// Hide the progress dialog
 		progressDialog.dismiss();
 		

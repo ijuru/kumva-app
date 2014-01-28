@@ -19,6 +19,8 @@
 
 package com.ijuru.kumva.app.site;
 
+import com.ijuru.kumva.remote.RemoteDictionary;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -29,13 +31,12 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 /**
  * Task to fetch suggestions for a search term
  */
 public class FetchSuggestionsTask extends FetchTask<List<Suggestion>> {
 
-	private Dictionary dictionary;
+	private RemoteDictionary dictionary;
 	private int timeout;
 	
 	/**
@@ -43,14 +44,14 @@ public class FetchSuggestionsTask extends FetchTask<List<Suggestion>> {
 	 * @param dictionary the dictionary
 	 * @param timeout the timeout in milliseconds
 	 */
-	public FetchSuggestionsTask(Dictionary dictionary, int timeout) {
+	public FetchSuggestionsTask(RemoteDictionary dictionary, int timeout) {
 		this.dictionary = dictionary;
 		this.timeout = timeout;
 	}
 	
 	@Override
 	protected List<Suggestion> fetch(String term) {
-		URL url = dictionary.createSuggestionsURL(term);
+		URL url = dictionary.createSuggestionsUrl(term);
 		
 		URLConnection connection;
 		try {

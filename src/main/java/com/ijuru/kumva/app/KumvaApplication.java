@@ -22,8 +22,9 @@ package com.ijuru.kumva.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ijuru.kumva.app.site.Dictionary;
+import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.app.ui.Dialogs;
+import com.ijuru.kumva.remote.RemoteDictionary;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -36,8 +37,8 @@ import android.preference.PreferenceManager;
  */
 public class KumvaApplication extends Application {
 	
-	private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
-	private Dictionary activeDictionary = null;
+	private List<RemoteDictionary> dictionaries = new ArrayList<RemoteDictionary>();
+	private RemoteDictionary activeDictionary = null;
 	private Entry currentEntry;
 	private MediaPlayer player;
 	
@@ -57,11 +58,11 @@ public class KumvaApplication extends Application {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String activeDictURL = prefs.getString(PREF_KEY_ACTIVEDICT, null);
 		if (activeDictURL != null)
-			activeDictionary = getDictionaryByURL(activeDictURL);
+			activeDictionary = getDictionaryByUrl(activeDictURL);
 		
 		// Add Kinyarwanda.net if there are no dictionaries
 		if (this.dictionaries.size() == 0) {
-			Dictionary kinyaDict = new Dictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
+			RemoteDictionary kinyaDict = new RemoteDictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
 			this.dictionaries.add(kinyaDict);
 			this.activeDictionary = kinyaDict;
 		}
@@ -97,7 +98,7 @@ public class KumvaApplication extends Application {
 				String version = fields[2];
 				String defLang = fields[3];
 				String meanLang = fields[4];
-				addDictionary(new Dictionary(url, name, version, defLang, meanLang));
+				addDictionary(new RemoteDictionary(url, name, version, defLang, meanLang));
 			}
 			else {
 				Dialogs.toast(this, getString(R.string.err_dictloading));
@@ -115,7 +116,7 @@ public class KumvaApplication extends Application {
 		Editor editor = prefs.edit();
 		editor.clear();
 		int dict = 1;
-		for (Dictionary dictionary : dictionaries)
+		for (RemoteDictionary dictionary : dictionaries)
 			editor.putString("site" + (dict++), dictionary.toString());
 
 		editor.commit();
@@ -124,7 +125,7 @@ public class KumvaApplication extends Application {
 		if (activeDictionary != null) {
 			prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			editor = prefs.edit();
-			editor.putString(PREF_KEY_ACTIVEDICT, activeDictionary.getURL());
+			editor.putString(PREF_KEY_ACTIVEDICT, activeDictionary.getUrl());
 			editor.commit();
 		}
 	}
@@ -133,7 +134,7 @@ public class KumvaApplication extends Application {
 	 * Gets the list of dictionaries available
 	 * @return the dictionaries
 	 */
-	public List<Dictionary> getDictionaries() {
+	public List<RemoteDictionary> getDictionaries() {
 		return dictionaries;
 	}
 	
@@ -141,9 +142,9 @@ public class KumvaApplication extends Application {
 	 * Gets the dictionary with the given url
 	 * @return the dictionary or null
 	 */
-	public Dictionary getDictionaryByURL(String url) {
-		for (Dictionary dict : dictionaries)
-			if (url.equals(dict.getURL()))
+	public RemoteDictionary getDictionaryByUrl(String url) {
+		for (RemoteDictionary dict : dictionaries)
+			if (url.equals(dict.getUrl()))
 				return dict;
 		return null;
 	}
@@ -152,7 +153,7 @@ public class KumvaApplication extends Application {
 	 * Gets the active dictionary
 	 * @return the active dictionary
 	 */
-	public Dictionary getActiveDictionary() {
+	public RemoteDictionary getActiveDictionary() {
 		return this.activeDictionary;
 	}
 	
@@ -160,7 +161,7 @@ public class KumvaApplication extends Application {
 	 * Sets the active dictionary
 	 * @param dictionary the active dictionary
 	 */
-	public void setActiveDictionary(Dictionary dictionary) {
+	public void setActiveDictionary(RemoteDictionary dictionary) {
 		this.activeDictionary = dictionary;
 	}
 	
@@ -168,7 +169,7 @@ public class KumvaApplication extends Application {
 	 * Adds the specified dictionary
 	 * @param dictionary the dictionary to add
 	 */
-	public void addDictionary(Dictionary dictionary) {
+	public void addDictionary(RemoteDictionary dictionary) {
 		// If its the only dictionary then make it active
 		if (this.dictionaries.size() == 0)
 			this.activeDictionary = dictionary;
@@ -180,7 +181,7 @@ public class KumvaApplication extends Application {
 	 * Removes the specified dictionary
 	 * @param dictionary the dictionary to delete
 	 */
-	public void removeDictionary(Dictionary dictionary) {
+	public void removeDictionary(RemoteDictionary dictionary) {
 		this.dictionaries.remove(dictionary);
 		
 		if (dictionary == activeDictionary)

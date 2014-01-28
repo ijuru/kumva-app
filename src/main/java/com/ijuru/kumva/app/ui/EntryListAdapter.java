@@ -19,9 +19,9 @@
 
 package com.ijuru.kumva.app.ui;
 
-import com.ijuru.kumva.app.Entry;
+import com.ijuru.kumva.Entry;
+import com.ijuru.kumva.Revision;
 import com.ijuru.kumva.app.R;
-import com.ijuru.kumva.app.util.Utils;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -60,7 +60,9 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 		if (view == null)
 			view = inflater.inflate(R.layout.list_item_entry, null);
 
-		Entry definition = this.getItem(position);
+		Entry entry = this.getItem(position);
+		Revision definition = entry.getRevisions().get(0);
+
 		if (definition != null) {
 			TextView prefix = (TextView) view.findViewById(R.id.prefix);
 			TextView lemma = (TextView) view.findViewById(R.id.lemma);

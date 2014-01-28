@@ -36,11 +36,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ijuru.kumva.app.Entry;
+import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.app.KumvaApplication;
-import com.ijuru.kumva.app.search.Search;
-import com.ijuru.kumva.app.search.SearchResult;
-import com.ijuru.kumva.app.site.Dictionary;
+import com.ijuru.kumva.app.search.SearchTask;
+import com.ijuru.kumva.remote.RemoteDictionary;
+import com.ijuru.kumva.search.SearchResult;
 import com.ijuru.kumva.app.site.FetchSuggestionsTask;
 import com.ijuru.kumva.app.site.FetchTask;
 import com.ijuru.kumva.app.site.Suggestion;
@@ -58,7 +58,7 @@ import java.util.List;
 public class SearchActivity extends ActionBarActivity implements
 		SearchView.OnQueryTextListener,
 		AdapterView.OnItemClickListener,
-		Search.SearchListener,
+		SearchTask.SearchListener,
 		DialogInterface.OnCancelListener,
 		FetchTask.FetchListener<List<Suggestion>> {
 
@@ -67,7 +67,7 @@ public class SearchActivity extends ActionBarActivity implements
 	private ProgressDialog progressDialog;
 	private String suggestionsTerm;
 	private FetchSuggestionsTask suggestionsTask;
-	private Search search;
+	private SearchTask search;
 
 	/**
 	 * @see android.support.v7.app.ActionBarActivity#onCreate(android.os.Bundle)
@@ -188,7 +188,7 @@ public class SearchActivity extends ActionBarActivity implements
 
 		// Initiate search of the active dictionary
 		KumvaApplication app = (KumvaApplication) getApplication();
-		Dictionary activeDictionary = app.getActiveDictionary();
+		RemoteDictionary activeDictionary = app.getActiveDictionary();
 
 		if (activeDictionary != null) {
 			progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
@@ -200,9 +200,9 @@ public class SearchActivity extends ActionBarActivity implements
 
 			int timeout = getResources().getInteger(R.integer.connection_timeout);
 
-			search = activeDictionary.createSearch(timeout);
+			search = new SearchTask(activeDictionary, timeout);
 			search.setListener(this);
-			search.execute(query, limit);
+			search.execute(query, limit, "android");
 		}
 		else
 			Dialogs.error(this, getString(R.string.err_nodictionary));
@@ -212,7 +212,7 @@ public class SearchActivity extends ActionBarActivity implements
 	 * Called when search completes successfully
 	 */
 	@Override
-	public void onSearchCompleted(Search search, SearchResult result) {
+	public void onSearchCompleted(SearchTask search, SearchResult result) {
 		// Hide the progress dialog
 		progressDialog.dismiss();
 
@@ -221,8 +221,8 @@ public class SearchActivity extends ActionBarActivity implements
 			setStatusMessage(getString(R.string.str_noresults));
 		}
 		else {
-			for (Entry definition : result.getMatches())
-				definitionAdapter.add(definition);
+			for (Entry entry : result.getMatches())
+				definitionAdapter.add(entry);
 
 			if (!TextUtils.isEmpty(result.getSuggestion())) {
 				// Update status message to show user the search suggestion
@@ -236,7 +236,7 @@ public class SearchActivity extends ActionBarActivity implements
 	 * Called if search fails
 	 */
 	@Override
-	public void onSearchError(Search search) {
+	public void onSearchError(SearchTask search) {
 		// Hide the progress dialog and display error message
 		progressDialog.dismiss();
 		Dialogs.toast(this, getString(R.string.err_communicationfailed));
@@ -254,7 +254,7 @@ public class SearchActivity extends ActionBarActivity implements
 		listResults.setAdapter(suggestionAdapter);
 
 		KumvaApplication app = (KumvaApplication) getApplication();
-		Dictionary activeDictionary = app.getActiveDictionary();
+		RemoteDictionary activeDictionary = app.getActiveDictionary();
 
 		if (activeDictionary != null) {
 			// Cancel existing suggestion fetch

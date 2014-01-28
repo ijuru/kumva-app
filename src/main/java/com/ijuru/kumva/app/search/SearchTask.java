@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 Rowan Seymour
- * 
+ *
  * This file is part of Kumva.
  *
  * Kumva is free software: you can redistribute it and/or modify
@@ -19,18 +19,29 @@
 
 package com.ijuru.kumva.app.search;
 
-import com.ijuru.kumva.app.site.Dictionary;
+import com.ijuru.kumva.Entry;
+import com.ijuru.kumva.remote.RemoteDictionary;
+import com.ijuru.kumva.remote.RemoteSearch;
+import com.ijuru.kumva.search.Search;
+import com.ijuru.kumva.search.SearchResult;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for searches
  */
-public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
+public class SearchTask extends AsyncTask<Object, Void, SearchResult> {
 
-	protected Dictionary dictionary;
+	protected RemoteDictionary dictionary;
+
 	protected SearchListener listener;
-	
+
+	protected int timeout;
+
 	/**
 	 * Listener class for search tasks
 	 */
@@ -40,21 +51,22 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 		 * @param search the search
 		 * @param result the search results
 		 */
-		public void onSearchCompleted(Search search, SearchResult result);
-		
+		public void onSearchCompleted(SearchTask search, SearchResult result);
+
 		/**
 		 * Called when a search resulted in an error
 		 * @param search the search
 		 */
-		public void onSearchError(Search search);
+		public void onSearchError(SearchTask search);
 	}
-	
+
 	/**
 	 * Creates a search on the given dictionary
 	 * @param dictionary the dictionary
 	 */
-	public Search(Dictionary dictionary) {
+	public SearchTask(RemoteDictionary dictionary, int timeout) {
 		this.dictionary = dictionary;
+		this.timeout = timeout;
 	}
 	/**
 	 * Sets the search listener
@@ -71,7 +83,15 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 	protected SearchResult doInBackground(Object... params) {
 		String query = (String)params[0];
 		Integer limit = (Integer)params[1];
-		return doSearch(query, limit);
+
+		Search search = new RemoteSearch(dictionary, timeout);
+		try {
+			return search.execute(query, limit, "android");
+		}
+		catch (Exception ex) {
+			Log.e("Kumva", ex.getMessage(), ex);
+			return null;
+		}
 	}
 
 	/**
@@ -86,11 +106,4 @@ public abstract class Search extends AsyncTask<Object, Void, SearchResult> {
 				listener.onSearchError(this);
 		}
 	}
-
-	/**
-	 * Overridden by search implementations
-	 * @param query the search query
-	 * @return the search result
-	 */
-	protected abstract SearchResult doSearch(String query, int limit);
 }

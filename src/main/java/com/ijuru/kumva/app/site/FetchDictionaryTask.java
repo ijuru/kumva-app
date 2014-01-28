@@ -19,6 +19,8 @@
 
 package com.ijuru.kumva.app.site;
 
+import com.ijuru.kumva.remote.RemoteDictionary;
+
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,23 +30,24 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 /**
  * Task to fetch a dictionary's info from the a URL
  */
-public class FetchDictionaryTask extends FetchTask<Dictionary> {
+public class FetchDictionaryTask extends FetchTask<RemoteDictionary> {
 	
 	@Override
-	protected Dictionary fetch(String url) {
-		Dictionary dictionary = new Dictionary(url);
-		URL dictURL = dictionary.createInfoURL();
-		if (dictURL == null)
+	protected RemoteDictionary fetch(String url) {
+		RemoteDictionary dictionary = new RemoteDictionary(url);
+
+		URL infoUrl = dictionary.createInfoUrl();
+		if (infoUrl == null) {
 			return null;
+		}
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(dictURL.openStream());
+			Document document = builder.parse(infoUrl.openStream());
 			Element root =document.getDocumentElement();
 			Node nameNode = root.getElementsByTagName("name").item(0);
 			Node versionNode = root.getElementsByTagName("kumvaversion").item(0);

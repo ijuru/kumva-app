@@ -19,8 +19,6 @@
 
 package com.ijuru.kumva.app.ui;
 
-import com.ijuru.kumva.app.site.Dictionary;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +26,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.ijuru.kumva.remote.RemoteDictionary;
+
 /**
  * Special list adapter to display definition objects
  */
-public class DictionaryListAdapter extends ArrayAdapter<Dictionary> {
+public class DictionaryListAdapter extends ArrayAdapter<RemoteDictionary> {
 	
 	private LayoutInflater inflater;
 	
@@ -56,8 +56,8 @@ public class DictionaryListAdapter extends ArrayAdapter<Dictionary> {
 		View view = convertView;
 		if (view == null)
 			view = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
-		
-		Dictionary dictionary = this.getItem(position);
+
+		RemoteDictionary dictionary = this.getItem(position);
 		if (dictionary != null) {	
 			TextView text = (TextView)view.findViewById(android.R.id.text1);
 			text.setText(dictionary.getName());
