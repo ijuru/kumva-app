@@ -4,6 +4,7 @@
     <EditTextPreference 
     	android:title="@string/str_maximumresults" 
     	android:key="max_results"
-    	android:defaultValue="@integer/def_max_results">
+    	android:defaultValue="@integer/def_max_results"
+		android:inputType="number">
     </EditTextPreference>
 </PreferenceScreen>
