@@ -29,6 +29,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ public class SearchActivity extends ActionBarActivity implements
 		DialogInterface.OnCancelListener,
 		FetchTask.FetchListener<List<Suggestion>> {
 
+	private Menu menu;
 	private EntryListAdapter definitionAdapter;
 	private SuggestionListAdapter suggestionAdapter;
 	private ProgressDialog progressDialog;
@@ -74,7 +76,10 @@ public class SearchActivity extends ActionBarActivity implements
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d("kumva", "onCreate");
+
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_search);
 
 		this.definitionAdapter = new EntryListAdapter(this);
@@ -82,15 +87,6 @@ public class SearchActivity extends ActionBarActivity implements
 
 		ListView listResults = (ListView)findViewById(R.id.listresults);
 		listResults.setOnItemClickListener(this);
-
-		// Check for an initial query passed via the intent
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			String initQuery = (String) extras.get("query");
-			if (initQuery != null) {
-				doSearch(initQuery);
-			}
-		}
 	}
 
 	/**
@@ -98,10 +94,17 @@ public class SearchActivity extends ActionBarActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d("kumva", "onCreateOptionsMenu");
+
+		this.menu = menu;
+
 		getMenuInflater().inflate(R.menu.search, menu);
-		MenuItem searchItem = menu.findItem(R.id.action_search);
-		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+		SearchView searchView = getSearchView();
 		searchView.setOnQueryTextListener(this);
+		searchView.setIconifiedByDefault(false);
+
+		updateControls();
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -130,37 +133,38 @@ public class SearchActivity extends ActionBarActivity implements
 	 */
 	@Override
 	protected void onResume() {
+		Log.d("kumva", "onResume");
+
 		super.onResume();
 
 		// In case active dictionary was changed
-		updateControls();
+		if (menu != null) {
+			updateControls();
+		}
 	}
 
 	/**
 	 * Updates controls which depend on the active dictionary
 	 */
 	private void updateControls() {
-		// TODO
-
-		//KumvaApplication app = (KumvaApplication)getApplication();
-		//EditText txtQuery = (EditText)findViewById(R.id.queryfield);
-
-		//MenuItem searchItem = menu.findViewById(R.id.action_search);
-		//SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
 		// Create query field hint from active dictionary's languages
-		//Dictionary dictionary = app.getActiveDictionary();
-		//if (dictionary != null) {
-			//String lang1 = Utils.getLanguageName(dictionary.getDefinitionLang());
-			//String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
-			//String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
-			//txtQuery.setHint(hint);
-			//txtQuery.setEnabled(true);
-		//}
-		//else {
-			//txtQuery.setHint(R.string.str_nodictionary);
-			//txtQuery.setEnabled(false);
-		//}
+		KumvaApplication app = (KumvaApplication) getApplication();
+		RemoteDictionary dictionary = app.getActiveDictionary();
+
+		SearchView searchView = getSearchView();
+
+		if (dictionary != null) {
+			String lang1 = Utils.getLanguageName(dictionary.getDefinitionLang());
+			String lang2 = Utils.getLanguageName(dictionary.getMeaningLang());
+			String hint = String.format(getString(R.string.str_searchhint), lang1, lang2);
+
+			searchView.setQueryHint(hint);
+			searchView.setEnabled(true);
+		}
+		else {
+			searchView.setQueryHint(getString(R.string.str_nodictionary));
+			searchView.setEnabled(false);
+		}
 	}
 
 	/**
@@ -174,8 +178,6 @@ public class SearchActivity extends ActionBarActivity implements
 		if (suggestionsTask != null) {
 			suggestionsTask.cancel(true);
 		}
-
-		// TODO update search view query
 
 		// Switch to definition list view
 		ListView listResults = (ListView)findViewById(R.id.listresults);
@@ -354,6 +356,18 @@ public class SearchActivity extends ActionBarActivity implements
 			txtStatus.setText(message);
 			txtStatus.setVisibility(View.VISIBLE);
 		}
+	}
+
+	/**
+	 * Helper method to get the search view
+	 * @return the search view
+	 */
+	protected SearchView getSearchView() {
+		if (menu != null) {
+			MenuItem searchItem = menu.findItem(R.id.action_search);
+			return (SearchView) MenuItemCompat.getActionView(searchItem);
+		}
+		return null;
 	}
 
 	/**
