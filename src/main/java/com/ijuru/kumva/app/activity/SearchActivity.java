@@ -104,6 +104,11 @@ public class SearchActivity extends ActionBarActivity implements
 		searchView.setOnQueryTextListener(this);
 		searchView.setIconifiedByDefault(false);
 
+		String query = getIntent().getStringExtra("query");
+		if (query != null) {
+			doSearch(query);
+		}
+
 		updateControls();
 
 		return super.onCreateOptionsMenu(menu);
