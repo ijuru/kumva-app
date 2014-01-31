@@ -24,6 +24,21 @@ android {
 		minSdkVersion 8
 		targetSdkVersion 19
 	}
+
+	signingConfigs {
+		release {
+			storeFile file("../../keystore")
+			storePassword System.console().readLine("\n\$ Enter keystore password: ")
+			keyAlias "kumva"
+			keyPassword System.console().readLine("\n\$ Enter key password: ")
+		}
+	}
+
+	buildTypes {
+		release {
+			signingConfig signingConfigs.release
+		}
+	}
 }
 
 dependencies {
