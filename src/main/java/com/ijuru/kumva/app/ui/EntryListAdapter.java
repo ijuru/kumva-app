@@ -21,7 +21,7 @@ package com.ijuru.kumva.app.ui;
 
 import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.Revision;
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 
 import android.content.Context;
 import android.text.TextUtils;

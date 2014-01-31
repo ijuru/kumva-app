@@ -49,7 +49,7 @@ import com.ijuru.kumva.app.ui.Dialogs;
 import com.ijuru.kumva.app.ui.EntryListAdapter;
 import com.ijuru.kumva.app.ui.SuggestionListAdapter;
 import com.ijuru.kumva.app.util.Utils;
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 
 import java.util.List;
 

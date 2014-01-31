@@ -28,9 +28,9 @@ android {
 	signingConfigs {
 		release {
 			storeFile file("../../keystore")
-			storePassword System.console().readLine("\n\$ Enter keystore password: ")
+			storePassword System.console()?.readLine("\n\$ Enter keystore password: ")
 			keyAlias "kumva"
-			keyPassword System.console().readLine("\n\$ Enter key password: ")
+			keyPassword System.console()?.readLine("\n\$ Enter key password: ")
 		}
 	}
 

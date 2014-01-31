@@ -19,7 +19,6 @@
 
 package com.ijuru.kumva.app.search;
 
-import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.remote.RemoteDictionary;
 import com.ijuru.kumva.remote.RemoteSearch;
 import com.ijuru.kumva.search.Search;
@@ -27,9 +26,6 @@ import com.ijuru.kumva.search.SearchResult;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base class for searches

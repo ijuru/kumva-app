@@ -22,7 +22,7 @@ package com.ijuru.kumva.app.ui;
 import java.io.File;
 import java.io.FileInputStream;
 
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 import com.ijuru.kumva.app.site.FetchTask;
 import com.ijuru.kumva.app.site.FetchToFileTask;
 import com.ijuru.kumva.app.util.Utils;

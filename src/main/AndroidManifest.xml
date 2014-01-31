@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ijuru.kumva.app">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ijuru.kumva">
 
 	<uses-permission android:name="android.permission.INTERNET" />
 
 	<application
-		android:name=".KumvaApplication"
+		android:name=".app.KumvaApplication"
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name">
 
 		<activity
-			android:name=".activity.SearchActivity"
+			android:name=".app.activity.SearchActivity"
 			android:label="@string/app_name"
 			android:launchMode="singleTop"
 			android:theme="@style/KumvaActionBarTheme">
@@ -21,19 +21,19 @@
 		</activity>
 
 		<activity
-			android:name=".activity.EntryActivity"
+			android:name=".app.activity.EntryActivity"
 			android:theme="@style/KumvaActionBarTheme">
 			<!-- Parent activity meta-data to support 4.0 and lower -->
-			<meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".activity.SearchActivity" />
+			<meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".app.activity.SearchActivity" />
 		</activity>
 
 		<activity
-			android:name=".activity.PreferencesActivity"
+			android:name=".app.activity.PreferencesActivity"
 			android:label="@string/str_preferences"
 		/>
 
 		<activity
-			android:name=".activity.DictionariesActivity"
+			android:name=".app.activity.DictionariesActivity"
 			android:label="@string/str_dictionaries"
 		/>
 

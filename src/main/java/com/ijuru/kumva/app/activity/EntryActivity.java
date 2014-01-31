@@ -22,7 +22,7 @@ package com.ijuru.kumva.app.activity;
 import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.Revision;
 import com.ijuru.kumva.app.KumvaApplication;
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 import com.ijuru.kumva.app.ui.AudioButton;
 import com.ijuru.kumva.app.ui.Format;
 import com.ijuru.kumva.app.util.Utils;
@@ -132,7 +132,7 @@ public class EntryActivity extends ActionBarActivity {
 		// Display word class and noun classes
 		if (!TextUtils.isEmpty(definition.getWordClass())) {
 			String strIdName = "wcls_" + definition.getWordClass();
-			int strId = getResources().getIdentifier(strIdName, "string", "com.ijuru.kumva.app");
+			int strId = getResources().getIdentifier(strIdName, "string", getApplication().getPackageName());
 			StringBuilder sb = new StringBuilder(getString(strId));
 
 			// Create noun classes string

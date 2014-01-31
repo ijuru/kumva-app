@@ -22,7 +22,7 @@ package com.ijuru.kumva.app.activity;
 import java.util.Comparator;
 
 import com.ijuru.kumva.app.KumvaApplication;
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 import com.ijuru.kumva.app.site.FetchDictionaryTask;
 import com.ijuru.kumva.app.site.FetchTask;
 import com.ijuru.kumva.app.ui.Dialogs;

@@ -19,7 +19,7 @@
 
 package com.ijuru.kumva.app.activity;
 
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 import com.ijuru.kumva.app.util.Utils;
 
 import android.content.res.Resources;

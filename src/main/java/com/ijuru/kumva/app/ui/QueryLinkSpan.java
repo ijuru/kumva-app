@@ -19,7 +19,7 @@
 
 package com.ijuru.kumva.app.ui;
 
-import com.ijuru.kumva.app.R;
+import com.ijuru.kumva.R;
 import com.ijuru.kumva.app.activity.SearchActivity;
 
 import android.content.Context;

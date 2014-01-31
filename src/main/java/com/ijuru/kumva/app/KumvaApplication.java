@@ -25,6 +25,7 @@ import java.util.List;
 import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.app.ui.Dialogs;
 import com.ijuru.kumva.remote.RemoteDictionary;
+import com.ijuru.kumva.R;
 
 import android.app.Application;
 import android.content.SharedPreferences;
