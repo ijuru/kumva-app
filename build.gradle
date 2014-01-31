@@ -1,26 +1,29 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.8.+'
-    }
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:0.8.+'
+	}
 }
 apply plugin: 'android'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 	mavenLocal()
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.1"
+	compileSdkVersion 19
+	buildToolsVersion "19.0.1"
 
-    defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
-    }
+	defaultConfig {
+		versionCode 20
+		versionName "2.0"
+
+		minSdkVersion 8
+		targetSdkVersion 19
+	}
 }
 
 dependencies {
