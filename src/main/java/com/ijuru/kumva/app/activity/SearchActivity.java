@@ -382,7 +382,7 @@ public class SearchActivity extends ActionBarActivity implements
 		String title = getString(R.string.app_name) + " " + Utils.getVersionName(this);
 		String message = "Thank you for downloading Kumva\n" +
 				"\n" +
-				"If you have any problems please try @kinyarwandanet";
+				"If you have any problems please send a tweet to @kinyarwandanet";
 
 		Dialogs.alert(this, title, message);
 	}
