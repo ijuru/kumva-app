@@ -94,7 +94,7 @@ public class DictionariesActivity extends ListActivity implements FetchTask.Fetc
 		super.onStop();
 		
 		KumvaApplication app = (KumvaApplication)getApplication();
-		app.saveDictionaries();
+		app.savePreferences();
 	}
 
 	/**

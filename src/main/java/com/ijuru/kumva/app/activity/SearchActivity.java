@@ -153,8 +153,7 @@ public class SearchActivity extends ActionBarActivity implements
 	 */
 	private void updateControls() {
 		// Create query field hint from active dictionary's languages
-		KumvaApplication app = (KumvaApplication) getApplication();
-		RemoteDictionary dictionary = app.getActiveDictionary();
+		RemoteDictionary dictionary = getKumvaApplication().getActiveDictionary();
 
 		SearchView searchView = getSearchView();
 
@@ -194,8 +193,7 @@ public class SearchActivity extends ActionBarActivity implements
 		definitionAdapter.clear();
 
 		// Initiate search of the active dictionary
-		KumvaApplication app = (KumvaApplication) getApplication();
-		RemoteDictionary activeDictionary = app.getActiveDictionary();
+		RemoteDictionary activeDictionary = getKumvaApplication().getActiveDictionary();
 
 		if (activeDictionary != null) {
 			progressDialog = ProgressDialog.show(this, getString(R.string.str_searching), getString(R.string.str_pleasewait));
@@ -207,9 +205,9 @@ public class SearchActivity extends ActionBarActivity implements
 
 			int timeout = getResources().getInteger(R.integer.connection_timeout);
 
-			search = new SearchTask(activeDictionary, timeout);
+			search = new SearchTask(activeDictionary, query, timeout);
 			search.setListener(this);
-			search.execute(query, limit, "android");
+			search.execute(limit, "android");
 		}
 		else
 			Dialogs.error(this, getString(R.string.err_nodictionary));
@@ -237,6 +235,9 @@ public class SearchActivity extends ActionBarActivity implements
 				setStatusMessage(message);
 			}
 		}
+
+		// Add to search history
+		//getKumvaApplication().addRecentSearch(search.getQuery());
 	}
 
 	/**
@@ -260,8 +261,7 @@ public class SearchActivity extends ActionBarActivity implements
 		ListView listResults = (ListView)findViewById(R.id.listresults);
 		listResults.setAdapter(suggestionAdapter);
 
-		KumvaApplication app = (KumvaApplication) getApplication();
-		RemoteDictionary activeDictionary = app.getActiveDictionary();
+		RemoteDictionary activeDictionary = getKumvaApplication().getActiveDictionary();
 
 		if (activeDictionary != null) {
 			// Cancel existing suggestion fetch
@@ -328,7 +328,7 @@ public class SearchActivity extends ActionBarActivity implements
 		Object item = parent.getItemAtPosition(position);
 		if (item instanceof Entry) {
 			Entry definition = (Entry)item;
-			((KumvaApplication)getApplication()).setCurrentEntry(definition);
+			getKumvaApplication().setCurrentEntry(definition);
 
 			Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
 			startActivity(intent);
@@ -385,5 +385,13 @@ public class SearchActivity extends ActionBarActivity implements
 				"If you have any problems please send a tweet to @kinyarwandanet";
 
 		Dialogs.alert(this, title, message);
+	}
+
+	/**
+	 * Convenience method to get the Kumva application
+	 * @return the application
+	 */
+	protected KumvaApplication getKumvaApplication() {
+		return (KumvaApplication) getApplication();
 	}
 }

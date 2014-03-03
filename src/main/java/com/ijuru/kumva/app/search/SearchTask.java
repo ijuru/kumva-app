@@ -34,6 +34,8 @@ public class SearchTask extends AsyncTask<Object, Void, SearchResult> {
 
 	protected RemoteDictionary dictionary;
 
+	protected String query;
+
 	protected SearchListener listener;
 
 	protected int timeout;
@@ -60,10 +62,20 @@ public class SearchTask extends AsyncTask<Object, Void, SearchResult> {
 	 * Creates a search on the given dictionary
 	 * @param dictionary the dictionary
 	 */
-	public SearchTask(RemoteDictionary dictionary, int timeout) {
+	public SearchTask(RemoteDictionary dictionary, String query, int timeout) {
 		this.dictionary = dictionary;
+		this.query = query;
 		this.timeout = timeout;
 	}
+
+	/**
+	 * Gets the query
+	 * @return the query
+	 */
+	public String getQuery() {
+		return query;
+	}
+
 	/**
 	 * Sets the search listener
 	 * @param listener the listener
@@ -77,12 +89,12 @@ public class SearchTask extends AsyncTask<Object, Void, SearchResult> {
 	 */
 	@Override
 	protected SearchResult doInBackground(Object... params) {
-		String query = (String)params[0];
-		Integer limit = (Integer)params[1];
+		Integer limit = (Integer) params[0];
+		String ref = (String) params[1];
 
 		Search search = new RemoteSearch(dictionary, timeout);
 		try {
-			return search.execute(query, limit, "android");
+			return search.execute(query, limit, ref);
 		}
 		catch (Exception ex) {
 			Log.e("Kumva", ex.getMessage(), ex);

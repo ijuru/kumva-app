@@ -20,10 +20,13 @@
 package com.ijuru.kumva.app;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.ijuru.kumva.Entry;
 import com.ijuru.kumva.app.ui.Dialogs;
+import com.ijuru.kumva.app.util.SizeLimitedUniqueHistory;
+import com.ijuru.kumva.app.util.Utils;
 import com.ijuru.kumva.remote.RemoteDictionary;
 import com.ijuru.kumva.R;
 
@@ -40,11 +43,16 @@ public class KumvaApplication extends Application {
 	
 	private List<RemoteDictionary> dictionaries = new ArrayList<RemoteDictionary>();
 	private RemoteDictionary activeDictionary = null;
+
+	private Collection<String> recentSearches = new SizeLimitedUniqueHistory<String>(20);
+
 	private Entry currentEntry;
 	private MediaPlayer player;
 	
 	private final String PREF_FILE_DICTS = "dictionaries";
+
 	private final String PREF_KEY_ACTIVEDICT = "active_dict";
+	//private final String PREF_KEY_RECENTSEARCHES = "recent_searches";
 
 	/**
 	 * @see android.app.Application#onCreate()
@@ -52,22 +60,9 @@ public class KumvaApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
-		loadDictionaries();
-		
-		// Get active dictionary from preferences
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		String activeDictURL = prefs.getString(PREF_KEY_ACTIVEDICT, null);
-		if (activeDictURL != null)
-			activeDictionary = getDictionaryByUrl(activeDictURL);
-		
-		// Add Kinyarwanda.net if there are no dictionaries
-		if (this.dictionaries.size() == 0) {
-			RemoteDictionary kinyaDict = new RemoteDictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
-			this.dictionaries.add(kinyaDict);
-			this.activeDictionary = kinyaDict;
-		}
-		
+
+		loadPreferences();
+
 		this.player = new MediaPlayer();
 	}
 		
@@ -76,15 +71,33 @@ public class KumvaApplication extends Application {
 	 */
 	@Override
 	public void onTerminate() {
+		savePreferences();
+
 		super.onTerminate();
-		
-		saveDictionaries();
+	}
+
+	protected void loadPreferences() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		loadDictionaries();
+
+		// Get active dictionary from default preferences
+		String activeDictURL = prefs.getString(PREF_KEY_ACTIVEDICT, null);
+		if (activeDictURL != null) {
+			this.activeDictionary = getDictionaryByUrl(activeDictURL);
+		}
+
+		// Get recent searches from default preferences
+		/*String recentSearhesCsv = prefs.getString(PREF_KEY_RECENTSEARCHES, null);
+		if (recentSearhesCsv != null) {
+			this.recentSearches = Utils.parseCSV(recentSearhesCsv);
+		}*/
 	}
 
 	/**
 	 * Loads the dictionaries from the dictionary preferences file
 	 */
-	public void loadDictionaries() {
+	protected void loadDictionaries() {
 		// Get the dictionaries shared pref file
 		SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREF_FILE_DICTS, MODE_PRIVATE);
 		
@@ -106,28 +119,50 @@ public class KumvaApplication extends Application {
 				break;
 			}
 		}
+
+		// Add Kinyarwanda.net if there are no dictionaries
+		if (this.dictionaries.size() == 0) {
+			RemoteDictionary kinyaDict = new RemoteDictionary("http://kinyarwanda.net", "Kinyarwanda.net", "?", "rw", "en");
+			this.dictionaries.add(kinyaDict);
+			this.activeDictionary = kinyaDict;
+		}
 	}
 	
 	/**
 	 * Saves the dictionaries to the dictionary preferences file
 	 */
-	public void saveDictionaries() {
+	public void savePreferences() {
 		// Get the dictionaries a special preference file
 		SharedPreferences prefs = getSharedPreferences(PREF_FILE_DICTS, MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		editor.clear();
 		int dict = 1;
-		for (RemoteDictionary dictionary : dictionaries)
+		for (RemoteDictionary dictionary : dictionaries) {
 			editor.putString("site" + (dict++), dictionary.toString());
+		}
 
 		editor.commit();
 			
-		// Save active dictionary as a default preference
-		if (activeDictionary != null) {
-			prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			editor = prefs.edit();
-			editor.putString(PREF_KEY_ACTIVEDICT, activeDictionary.getUrl());
-			editor.commit();
+		// Save default preferences
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		editor = prefs.edit();
+		setPreference(editor, PREF_KEY_ACTIVEDICT, activeDictionary.getUrl());
+		//setPreference(editor, PREF_KEY_RECENTSEARCHES, Utils.makeCSV(recentSearches));
+		editor.commit();
+	}
+
+	/**
+	 * Sets a single preference
+	 * @param editor the editor
+	 * @param key the preference key
+	 * @param value the value
+	 */
+	protected void setPreference(Editor editor, String key, String value) {
+		if (value != null) {
+			editor.putString(key, value);
+		}
+		else {
+			editor.remove(key);
 		}
 	}
 
@@ -188,6 +223,22 @@ public class KumvaApplication extends Application {
 		if (dictionary == activeDictionary)
 			activeDictionary = null;
 	}
+
+	/**
+	 * Gets the recent searches list
+	 * @return the list
+	 */
+	/*public Collection<String> getRecentSearches() {
+		return recentSearches;
+	}*/
+
+	/**
+	 * Adds a recent search
+	 * @param query the query
+	 */
+	/*public void addRecentSearch(String query) {
+		recentSearches.add(query);
+	}*/
 
 	/**
 	 * Gets the currently viewed entry
